@@ -16,7 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from identity.views import upload_identity
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('upload/', upload_identity, name='upload'),
 ]
+
+# Esto permite que VS Code y el navegador vean las fotos en desarrollo
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

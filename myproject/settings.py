@@ -148,3 +148,7 @@ CELERY_RESULT_BACKEND = 'django-db' # Guardaremos el estado en Postgres
 CELERY_ACCEPT_CONTENT = ['json']
 
 CELERY_TASK_SERIALIZER = 'json'
+
+# Login URL
+
+LOGIN_URL = '/admin/login/' # Redirects to the admin login page if there's no active session

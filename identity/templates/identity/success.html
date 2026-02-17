@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>¡Éxito! - SecureID Engine</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 50px auto; text-align: center; }
+        .card { border: 1px solid #ddd; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .icon { font-size: 50px; color: #28a745; }
+        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="icon">✓</div>
+        <h1>Solicitud Recibida</h1>
+        <p>Tu identificación ha sido cargada correctamente.</p>
+        <p><strong>ID de Seguimiento:</strong> <br> <code>{{ request_id }}</code></p>
+        <hr>
+        <p>El procesamiento OCR ha comenzado en segundo plano en el sistema distribuido.</p>
+        <a href="{% url 'upload' %}" class="btn">Subir otra imagen</a>
+    </div>
+</body>
+</html>

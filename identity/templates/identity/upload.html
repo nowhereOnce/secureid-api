@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SecureID Engine - Upload</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 50px auto; line-height: 1.6; }
+        .success { color: green; border: 1px solid green; padding: 10px; background: #e6fffa; }
+        form { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Carga de Identificación</h2>
+    
+    {% if success_msg %}
+        <div class="success">{{ success_msg }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Iniciar Verificación</button>
+    </form>
+
+    <p><small>El procesamiento se realizará de forma asíncrona mediante Celery.</small></p>
+</body>
+</html>
