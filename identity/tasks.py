@@ -1,3 +1,4 @@
+import easyocr
 import os
 import time
 import random
@@ -10,36 +11,47 @@ def process_ocr_task(self, request_id):
     Simula el procesamiento pesado de OCR para una identificación.
     """
     start_time = time.time()
+    worker_node = os.environ.get('WORKER_NAME', "Unknown-Node")
     
     # 1. Recuperar la solicitud de la base de datos
     try:
         request = VerificationRequest.objects.get(id=request_id)
         request.status = 'processing'
         request.save()
-    except VerificationRequest.DoesNotExist:
-        return f"Error: Request {request_id} no encontrada."
 
-    # 2. Simular el trabajo pesado (Aquí es donde entraría tu GPU en el futuro)
-    # Simulamos que el OCR tarda entre 5 y 10 segundos
-    time.sleep(random.randint(5, 10))
+        #GPU intensive task
+        reader = easyocr.Reader(['es'], gpu=True)
+        image_path = request.image.path
+        result = reader.readtext(image_path, detail=0)
+        full_text = " ".join(result)
+
+        # Save
+        ExtractedData.objects.update_or_create(
+            request=request,
+            defaults={
+                'full_name': result[0] if len(result) > 0 else "No detectado",
+                'document_number': "Procesado por IA",
+                'confidence_score': 0.95,
+                'raw_json_response': {'detected_text': result}
+            }
+        )
+
+        request.status = 'completed'
+        request.save()
+
+    except Exception as e:
+        request.status  = 'failed'
+        request.save()
+        AuditLog.objects.create(
+            request=request,
+            worker_node= worker_node,
+            execution_time=time.time() - start_time,
+            error_message=str(e)
+        )
+        return f"Error: Request {request_id}. Nodo: {worker_node}\n Error: {str(e)}"
     
-    # 3. Guardar resultados simulados
-    ExtractedData.objects.update_or_create(
-        request=request,
-        defaults={
-            'full_name': 'ENRIQUE ALEJANDRO', # Tu nombre como prueba de éxito
-            'document_number': 'CURP1234567890',
-            'confidence_score': 0.98,
-            'raw_json_response': {'engine': 'Tesseract-Simulated', 'status': 'success'}
-        }
-    )
-
-    # 4. Actualizar estado y registrar auditoría
-    request.status = 'completed'
-    request.save()
 
     execution_time = time.time() - start_time
-    worker_node = os.environ.get('WORKER_NAME', "Unknown-Node")
 
     AuditLog.objects.create(
         request=request,
@@ -47,4 +59,4 @@ def process_ocr_task(self, request_id):
         execution_time=execution_time
     )
 
-    return f"Tarea {request_id} completada exitosamente por el nodo {worker_node}."
+    return f"OCR completado por {worker_node} en {execution_time:.2f}s"
