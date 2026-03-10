@@ -1,3 +1,4 @@
+import os
 import time
 import random
 from celery import shared_task
@@ -38,10 +39,12 @@ def process_ocr_task(self, request_id):
     request.save()
 
     execution_time = time.time() - start_time
+    worker_node = os.environ.get('WORKER_NAME', "Unknown-Node")
+
     AuditLog.objects.create(
         request=request,
-        worker_node="Laptop-Mint-Worker", # Identificamos quién hizo el trabajo
+        worker_node=worker_node,
         execution_time=execution_time
     )
 
-    return f"Tarea {request_id} completada exitosamente por el nodo local."
+    return f"Tarea {request_id} completada exitosamente por el nodo {worker_node}."
