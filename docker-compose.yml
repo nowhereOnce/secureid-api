@@ -35,7 +35,9 @@ services:
     command: celery -A myproject worker --loglevel=info
     volumes:
       - .:/app
+      - ./media:/app/media
     environment:
+      - WORKER_NAME=${WORKER_NAME}
       - CELERY_BROKER_URL=${CELERY_BROKER_URL}
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
