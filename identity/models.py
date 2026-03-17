@@ -33,10 +33,20 @@ class VerificationRequest(models.Model):
 class ExtractedData(models.Model):
     """Resultados detallados del OCR procesado por los Workers."""
     request = models.OneToOneField(VerificationRequest, on_delete=models.CASCADE, related_name='extracted_data')
+
+    # Universal Data
     full_name = models.CharField(max_length=255, blank=True, null=True)
-    document_number = models.CharField(max_length=100, blank=True, null=True)
-    birth_date = models.DateField(blank=True, null=True)
+
+    # Dinamic Data
+    structured_data = models.JSONField(
+        default=dict, 
+        help_text="Datos específicos según el tipo de documento (CURP, Elector Key, etc.)",
+        blank=True,
+        null=True
+    )
     
+    # Metadata
+    document_number = models.CharField(max_length=100, blank=True, null=True)
     confidence_score = models.FloatField(default=0.0)
     raw_json_response = models.JSONField(blank=True, null=True) # Para guardar la respuesta bruta del motor
 
