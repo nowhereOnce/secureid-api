@@ -43,23 +43,31 @@ def process_ocr_task(self, request_id):
         result = reader.readtext(processed_img, detail=0)
 
         # 3. Lógica de extracción por palabras clave
+        data_extracted = {}
         full_name = "No detectado"
-        curp = "No detectado"
         
         for i, text in enumerate(result):
             clean_text = text.upper()
+
+            # INE Logic
             if "NOMBRE" in clean_text and i + 1 < len(result):
                 # Usualmente el nombre son las siguientes 2 o 3 líneas
                 full_name = f"{result[i+2]} {result[i+4]}"
-            if "CURP" in clean_text and i + 1 < len(result):
-                curp = clean_curp(result[i+2])
 
+            if "CURP" in clean_text and i + 1 < len(result):
+                data_extracted['curp'] = clean_curp(result[i+2])
+
+            if text.startswith("CLAVE") and i + 1 < len(result):
+                clave_split = text.split()
+                data_extracted['clave_elector'] = clave_split[-1]
+                
         # Save
         ExtractedData.objects.update_or_create(
             request=request,
             defaults={
                 'full_name': full_name,
-                'document_number': curp,
+                'structured_data': data_extracted,
+                'document_number': data_extracted.get('curp', 'Not detected'),
                 'confidence_score': 0.98,
                 'raw_json_response': {'detected_text': result}
             }
