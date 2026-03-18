@@ -17,6 +17,34 @@ def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
             chars[i] = mapping[chars[i]]
     return "".join(chars)
 
+def preprocess_image(image_path):
+    """Aplica filtros OpenCV para mejorar la precisión del OCR."""
+    img = cv2.imread(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    processed = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    return processed
+
+def extract_ine_logic(ocr_results):
+    """Encapsula la lógica específica para la INE."""
+    data = {}
+    full_name = "No detectado"
+    
+    for i, text in enumerate(ocr_results):
+        clean_text = text.upper()
+        if "NOMBRE" in clean_text and i + 3 < len(ocr_results):
+            full_name = f"{ocr_results[i+2]} {ocr_results[i+3]}"
+            if not ocr_results[i+4].startswith("DOMICIL"):
+                full_name += f" {ocr_results[i+4]}"
+        
+        if "CURP" in clean_text and i + 2 < len(ocr_results):
+            data['curp'] = clean_alphanum_data(ocr_results[i+2])
+            
+        if text.startswith("CLAVE") and i + 1 < len(ocr_results):
+            clave_raw = text.split()[-1]
+            data['clave_elector'] = clean_alphanum_data(clave_raw, positions=range(18))
+            
+    return full_name, data
+
 @shared_task(bind=True)
 def process_ocr_task(self, request_id):
     """
@@ -25,52 +53,29 @@ def process_ocr_task(self, request_id):
     start_time = time.time()
     worker_node = os.environ.get('WORKER_NAME', "Unknown-Node")
     
-    # 1. Recuperar la solicitud de la base de datos
     try:
         request = VerificationRequest.objects.get(id=request_id)
         request.status = 'processing'
         request.save()
 
-        # 1. Pre-procesamiento con OpenCV para mejorar contraste
-        img = cv2.imread(request.image.path)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # Aplicamos un filtro para resaltar el texto negro sobre el fondo claro
-        processed_img = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-        
-        # 2. Ejecutar EasyOCR
+        # Preprocessing and reading 
+        processed_img = preprocess_image(request.image.path)
         reader = easyocr.Reader(['es'], gpu=True)
-        # Pasamos la imagen procesada como array de numpy
         result = reader.readtext(processed_img, detail=0)
 
-        # 3. Lógica de extracción por palabras clave
-        data_extracted = {}
-        full_name = "No detectado"
-        
-        for i, text in enumerate(result):
-            clean_text = text.upper()
+        # Extraction Logic 
+        if request.document_type == "ine":
+            full_name, structured_data = extract_ine_logic(result)
+        else:
+            full_name, structured_datta = "Documento no soportado", {}
 
-            # INE Logic
-            if "NOMBRE" in clean_text and i + 1 < len(result):
-                # First two lines (third if necessary)
-                full_name = f"{result[i+2]} {result[i+3]}"
-                if not result[i+4].startswith("DOMICIL"):
-                    full_name += f" {result[i+4]}"
-
-            if "CURP" in clean_text and i + 1 < len(result):
-                data_extracted['curp'] = clean_alphanum_data(result[i+2], positions= [4, 5, 6, 7, 8, 9, 17])
-
-            if text.startswith("CLAVE") and i + 1 < len(result):
-                clave_split = text.split()
-                clave_raw = clave_split[-1] # raw clave_elector (needs to be cleaned)
-                clave_elector = clean_alphanum_data(clave_raw, positions=[6,7,8,9,10,11,13,15,16.17])
-                data_extracted['clave_elector'] = clave_elector
         # Save
         ExtractedData.objects.update_or_create(
             request=request,
             defaults={
                 'full_name': full_name,
-                'structured_data': data_extracted,
-                'document_number': data_extracted.get('curp', 'Not detected'),
+                'structured_data': structured_data,
+                'document_number': structured_data.get('curp', 'Not detected'),
                 'confidence_score': 0.98,
                 'raw_json_response': {'detected_text': result}
             }
