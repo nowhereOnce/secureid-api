@@ -7,13 +7,13 @@ import random
 from celery import shared_task
 from .models import VerificationRequest, ExtractedData, AuditLog
 
-def clean_curp(text):
+def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
     """Limpia confusiones comunes de OCR en el CURP."""
     mapping = {'O': '0', 'Z': '2', 'I': '1', 'A': '4', 'S': '5', 'B': '8'}
     # El CURP tiene números en las posiciones 4-9 y en la última
     chars = list(text.replace(" ", ""))
     for i in range(len(chars)):
-        if i in [4, 5, 6, 7, 8, 9, 17] and chars[i] in mapping:
+        if i in positions and chars[i] in mapping:
             chars[i] = mapping[chars[i]]
     return "".join(chars)
 
@@ -55,12 +55,13 @@ def process_ocr_task(self, request_id):
                 full_name = f"{result[i+2]} {result[i+4]}"
 
             if "CURP" in clean_text and i + 1 < len(result):
-                data_extracted['curp'] = clean_curp(result[i+2])
+                data_extracted['curp'] = clean_alphanum_data(result[i+2], positions= [4, 5, 6, 7, 8, 9, 17])
 
             if text.startswith("CLAVE") and i + 1 < len(result):
                 clave_split = text.split()
-                data_extracted['clave_elector'] = clave_split[-1]
-                
+                clave_raw = clave_split[-1] # raw clave_elector (needs to be cleaned)
+                clave_elector = clean_alphanum_data(clave_raw, positions=[6,7,8,9,10,11,13,15,16.17])
+                data_extracted['clave_elector'] = clave_elector
         # Save
         ExtractedData.objects.update_or_create(
             request=request,
