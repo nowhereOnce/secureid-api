@@ -51,8 +51,10 @@ def process_ocr_task(self, request_id):
 
             # INE Logic
             if "NOMBRE" in clean_text and i + 1 < len(result):
-                # Usualmente el nombre son las siguientes 2 o 3 líneas
-                full_name = f"{result[i+2]} {result[i+4]}"
+                # First two lines (third if necessary)
+                full_name = f"{result[i+2]} {result[i+3]}"
+                if not result[i+4].startswith("DOMICIL"):
+                    full_name += f" {result[i+4]}"
 
             if "CURP" in clean_text and i + 1 < len(result):
                 data_extracted['curp'] = clean_alphanum_data(result[i+2], positions= [4, 5, 6, 7, 8, 9, 17])
