@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado de Verificación - SecureID</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: 40px auto; background-color: #f4f7f6; }
+        .card { background: white; padding: 25px; border-radius: 10px; shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .status-processing { color: #f39c12; font-weight: bold; }
+        .status-completed { color: #27ae60; font-weight: bold; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .data-item { border-bottom: 1px solid #eee; padding: 10px 0; }
+        .badge { background: #34495e; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Solicitud: <small>{{ verification.id }}</small></h1>
+        <p>Estado: <span class="status-{{ verification.status }}">
+            {{ verification.get_status_display|upper }}
+        </span></p>
+
+        {% if verification.status == 'completed' %}
+            <hr>
+            <h3>Datos Extraídos por la GPU</h3>
+            <div class="data-grid">
+                <div class="data-item">
+                    <strong>Nombre Completo:</strong><br>
+                    {{ verification.extracted_data.full_name }}
+                </div>
+                {% for key, value in verification.extracted_data.structured_data.items %}
+                    <div class="data-item">
+                        <strong>{{ key|upper }}:</strong><br>
+                        <code>{{ value }}</code>
+                    </div>
+                {% endfor %}
+            </div>
+            <p><small>Puntaje de confianza: {{ verification.extracted_data.confidence_score }}</small></p>
+            <a href="{% url 'upload' %}" style="display:block; margin-top:20px;">Nueva carga</a>
+
+        {% elif verification.status == 'failed' %}
+            <p style="color:red;">Error en el procesamiento. Por favor revisa los logs en el Admin.</p>
+            <a href="{% url 'upload' %}">Reintentar</a>
+
+        {% else %}
+            <p>Procesando imagen en el nodo... La página se actualizará automáticamente.</p>
+            <script>
+                setTimeout(function(){
+                    location.reload();
+                }, 4000);
+            </script>
+        {% endif %}
+    </div>
+</body>
+</html>
