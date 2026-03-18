@@ -1,0 +1,24 @@
+# Usamos la imagen oficial de AMD que ya tiene PyTorch y ROCm integrados
+FROM rocm/pytorch:latest
+
+# Configuraciones para evitar archivos basura y ver logs en tiempo real
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Instalamos dependencias de sistema necesarias para Django y PostgreSQL
+# La imagen base es Ubuntu, así que usamos apt
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    tesseract-ocr \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiamos los requerimientos y los instalamos
+# (No instalamos torch aquí porque ya viene en la imagen base)
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiamos el código del SecureID Engine
+COPY . /app/
