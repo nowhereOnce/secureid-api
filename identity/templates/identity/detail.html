@@ -17,13 +17,12 @@
         /* Encabezado en dos columnas */
         .header-section {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: flex-start;
             gap: 20px;
             margin-bottom: 20px;
         }
 
-        .info-col { flex: 1; }
         .image-col { width: 250px; text-align: right; } /* Tamaño menor para la imagen */
 
         .preview-img { 
@@ -67,13 +66,36 @@
             transition: background 0.2s;
         }
         .btn-copy:hover { background: #2c3e50; }
+        /* Nuevo estilo para botones de acción secundaria */
+        .btn-secondary {
+            display: inline-block;
+            background: #0984e3;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 5px rgba(9, 132, 227, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: #0773c5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(9, 132, 227, 0.3);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
 
     <div class="card">
         <div class="header-section">
-            <div class="info-col">
+            <div>
                 <h1 style="margin:0 0 10px 0;">Solicitud </h1>
                 <small style="color:#636e72; font-size:0.8em;">{{ verification.id }}</small>
                 <p><strong>Tipo:</strong> {{ verification.get_document_type_display }}</p>
@@ -91,7 +113,7 @@
         <hr style="border:0; border-top: 1px solid #eee;">
 
         {% if verification.status == 'completed' %}
-            <h3 style="margin-top:25px; color:#2d3436;">Resultados de la GPU ({{ verification.logs.first.worker_node }})</h3>
+            <h3 style="margin-top:25px; color:#2d3436;">Resultados de la extracción ({{ verification.logs.first.worker_node }})</h3>
             
             <div class="data-grid">
                 <div class="data-item">
@@ -113,8 +135,10 @@
                 {% endfor %}
             </div>
             
-            <div style="margin-top:30px; border-top: 1px solid #eee; padding-top:15px;">
-                <a href="{% url 'upload' %}" style="color:#0984e3; text-decoration:none;">← Realizar otra verificación</a>
+            <div style="margin-top:35px; border-top: 1px solid #eee; padding-top:25px; text-align: center;">
+                <a href="{% url 'upload' %}" class="btn-secondary">
+                    Realizar otra verificación
+                </a>
             </div>
 
         {% elif verification.status == 'failed' %}
