@@ -97,3 +97,25 @@ input {
     .image-col { width: 100%; max-width: 200px; margin-bottom: 20px; text-align: left; }
     .data-grid { grid-template-columns: 1fr; gap: 15px; }
 }
+
+#image-preview { 
+    display: none; 
+    margin: 20px auto; 
+    max-width: 100px; 
+    height: auto;
+    border-radius: 8px; 
+    border: 2px dashed #0984e3; 
+    padding: 5px;
+}
+
+form p { margin-bottom: 15px; }
+
+label { font-weight: bold; display: block; margin-bottom: 5px; }
+
+select, input[type="file"] { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid #dfe6e9; 
+    border-radius: 6px; 
+    box-sizing: border-box;
+}

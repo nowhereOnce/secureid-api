@@ -1,28 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>SecureID Engine - Upload</title>
-    <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 50px auto; line-height: 1.6; }
-        .success { color: green; border: 1px solid green; padding: 10px; background: #e6fffa; }
-        form { border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
-        button { background: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carga - SecureID Engine</title>
+    <link rel="stylesheet" href="{% static 'identity/css/style.css' %}">
 </head>
 <body>
-    <h2>Carga de Identificación</h2>
-    
-    {% if success_msg %}
-        <div class="success">{{ success_msg }}</div>
-    {% endif %}
+    <div class="card" style="max-width: 500px; margin: 50px auto;">
+        <h2 style="text-align: center; color: #2d3436;">Verificación de Identidad</h2>
+        <p style="text-align: center; color: #636e72;">Sube una imagen clara de tu documento.</p>
+        
+        <hr style="border:0; border-top: 1px solid #eee; margin: 20px 0;">
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Iniciar Verificación</button>
-    </form>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
 
-    <p><small>El procesamiento se realizará de forma asíncrona mediante Celery.</small></p>
+            <img id="image-preview" src="#" alt="Vista previa de la identificación">
+
+            <div style="text-align: center; margin-top: 25px;">
+                <button type="submit" class="btn-secondary" style="width: 100%; border: none; cursor: pointer;">
+                    Iniciar Procesamiento
+                </button>
+            </div>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px;">
+            <small style="color: #b2bec3;">
+                Procesamiento asíncrono vía Celery.
+            </small>
+        </p>
+    </div>
+
+    <script>
+        const imageInput = document.querySelector('input[type="file"]');
+        const preview = document.getElementById('image-preview');
+
+        imageInput.onchange = evt => {
+            const [file] = imageInput.files;
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
