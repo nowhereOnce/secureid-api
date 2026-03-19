@@ -89,6 +89,33 @@
         .btn-secondary:active {
             transform: translateY(0);
         }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column-reverse; /* Imagen arriba para mejor visibilidad */
+                align-items: center;
+                text-align: center;
+            }
+            
+            .image-col {
+                width: 100%;
+                max-width: 200px;
+                margin-bottom: 20px;
+                text-align: left;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr; /* Cambio a una sola columna en móviles */
+                gap: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+            
+            h1 { font-size: 1.5em; }
+        }
     </style>
 </head>
 <body>
