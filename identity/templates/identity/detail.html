@@ -7,7 +7,16 @@
     <link rel="stylesheet" href="{% static 'identity/css/style.css' %}">
 </head>
 <body>
-
+    <header class="main-header">
+        <div class="header-container">
+            <a href="{% url 'upload' %}" class="logo">
+                SECUREID<span>ENGINE</span>
+            </a>
+            <nav class="nav-links">
+                <a href="{% url 'upload' %}">Nueva Carga</a>
+            </nav>
+        </div>
+    </header>
     <div class="card">
         <div class="header-section">
             <div>

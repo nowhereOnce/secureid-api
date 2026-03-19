@@ -2,14 +2,14 @@
 body { 
     font-family: 'Segoe UI', sans-serif; 
     max-width: 900px; 
-    margin: 40px auto; 
+    margin: 0px auto; 
     background-color: #f4f7f6; 
-    padding: 20px; 
 }
 
 .card { 
     background: white; 
     padding: 30px; 
+    margin: 20px;
     border-radius: 12px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
 }
@@ -118,4 +118,53 @@ select, input[type="file"] {
     border: 1px solid #dfe6e9; 
     border-radius: 6px; 
     box-sizing: border-box;
+}
+
+/* Header */
+
+/* identity/static/identity/css/style.css */
+
+.main-header {
+    background-color: white;
+    border-bottom: 2px solid #eee; /* Línea sutil de separación */
+    border-bottom-left-radius: 12px; 
+    border-bottom-right-radius: 12px; 
+    padding: 15px 0;
+    margin: 0px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.header-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #2d3436;
+    text-decoration: none;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.logo span {
+    color: #0984e3; /* Nuestro azul de acción */
+}
+
+.nav-links a {
+    color: #636e72;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #0984e3;
 }

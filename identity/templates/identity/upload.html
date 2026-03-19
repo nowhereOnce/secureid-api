@@ -8,6 +8,16 @@
     <link rel="stylesheet" href="{% static 'identity/css/style.css' %}">
 </head>
 <body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="{% url 'upload' %}" class="logo">
+                SECUREID<span>ENGINE</span>
+            </a>
+            <nav class="nav-links">
+                <a href="{% url 'upload' %}">Nueva Carga</a>
+            </nav>
+        </div>
+    </header>
     <div class="card" style="max-width: 500px; margin: 50px auto;">
         <h2 style="text-align: center; color: #2d3436;">Verificación de Identidad</h2>
         <p style="text-align: center; color: #636e72;">Sube una imagen clara de tu documento.</p>
