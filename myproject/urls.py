@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from identity.views import upload_identity
+from identity.views import upload_identity, verification_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('upload/', upload_identity, name='upload'),
+    path('verification/<uuid:pk>/', verification_detail, name='verification_detail'),
 ]
 
 # Esto permite que VS Code y el navegador vean las fotos en desarrollo

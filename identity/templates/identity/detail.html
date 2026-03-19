@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Verificación - SecureID</title>
+    <link rel="stylesheet" href="{% static 'identity/css/style.css' %}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="{% url 'upload' %}" class="logo">
+                SECUREID<span>ENGINE</span>
+            </a>
+            <nav class="nav-links">
+                <a href="{% url 'upload' %}">Nueva Carga</a>
+            </nav>
+        </div>
+    </header>
+    <div class="card">
+        <div class="header-section">
+            <div>
+                <h1 style="margin:0 0 10px 0;">Solicitud </h1>
+                <small style="color:#636e72; font-size:0.8em;">{{ verification.id }}</small>
+                <p><strong>Tipo:</strong> {{ verification.get_document_type_display }}</p>
+                <div class="status-badge status-{{ verification.status }}">
+                    {{ verification.get_status_display }}
+                </div>
+            </div>
+            
+            <div class="image-col">
+                <p style="margin-top:0; font-size:0.8em; color:#636e72;">Documento original:</p>
+                <img src="{{ verification.image.url }}" class="preview-img" alt="Documento">
+            </div>
+        </div>
+
+        <hr style="border:0; border-top: 1px solid #eee;">
+
+        {% if verification.status == 'completed' %}
+            <h3 style="margin-top:25px; color:#2d3436;">Resultados de la extracción ({{ verification.logs.first.worker_node }})</h3>
+            
+            <div class="data-grid">
+                <div class="data-item">
+                    <strong>Nombre Completo:</strong>
+                    <div class="input-group">
+                        <input type="text" value="{{ verification.extracted_data.full_name }}" id="full_name">
+                        <button class="btn-copy" onclick="copyToClipboard('full_name')">Copiar</button>
+                    </div>
+                </div>
+
+                {% for key, value in verification.extracted_data.structured_data.items %}
+                    <div class="data-item">
+                        <strong>{{ key|upper }}:</strong>
+                        <div class="input-group">
+                            <input type="text" value="{{ value }}" id="input-{{ forloop.counter }}">
+                            <button class="btn-copy" onclick="copyToClipboard('input-{{ forloop.counter }}')">Copiar</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div style="margin-top:35px; border-top: 1px solid #eee; padding-top:25px; text-align: center;">
+                <a href="{% url 'upload' %}" class="btn-secondary">
+                    Realizar otra verificación
+                </a>
+            </div>
+
+        {% elif verification.status == 'failed' %}
+            <div style="padding:20px; color:#c0392b; background:#ffebee; border-radius:8px; margin-top:20px;">
+                <strong>Error:</strong> No se pudo procesar el documento. Verifica la calidad de la imagen.
+                <br><a href="{% url 'upload' %}" style="color:#c0392b;">Reintentar carga</a>
+            </div>
+
+        {% else %}
+            <div style="text-align:center; padding:40px 0;">
+                <p style="font-style:italic; color:#636e72;">Procesando datos en el sistema distribuido... La página se actualizará automáticamente.</p>
+                <script>
+                    setTimeout(function(){
+                        location.reload();
+                    }, 4000);
+                </script>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = "¡Copiado!";
+            btn.style.background = "#27ae60";
+            setTimeout(() => { 
+                btn.innerText = originalText; 
+                btn.style.background = "#34495e";
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
