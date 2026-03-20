@@ -24,10 +24,24 @@
         
         <hr style="border:0; border-top: 1px solid #eee; margin: 20px 0;">
 
+        <div class="mode-switch-wrapper">
+            <span style="font-size: 0.8em; color: #636e72;">Modo Verificador</span>
+            <label class="switch">
+                <input type="checkbox" id="mode-toggle" name="mode_toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
             {{ form.as_p }}
+
+            <div id="selfie-section" style="display: none; margin-top: 20px;">
+                <label>Foto del Rostro (Referencia):</label>
+                <input type="file" name="face_image" id="face_input">
+                <img id="face-preview" src="#" alt="Preview" style="display:none; max-width: 150px; margin-top: 10px;">
+            </div>
 
             <img id="image-preview" src="#" alt="Vista previa de la identificación">
 
@@ -56,6 +70,13 @@
                 preview.style.display = 'block';
             }
         }
+
+        const toggle = document.getElementById('mode-toggle');
+        const selfieSection = document.getElementById('selfie-section');
+
+        toggle.onchange = () => {
+            selfieSection.style.display = toggle.checked ? 'block' : 'none';
+        };
     </script>
 </body>
 </html>
