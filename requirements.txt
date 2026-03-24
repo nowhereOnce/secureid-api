@@ -8,3 +8,5 @@ pillow==12.1.1
 celery==5.3.6
 redis==5.0.1
 django-celery-results==2.5.1
+deepface==0.0.93
+tf-keras  # DeepFace lo requiere como backend

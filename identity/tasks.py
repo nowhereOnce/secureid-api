@@ -6,6 +6,30 @@ import time
 import random
 from celery import shared_task
 from .models import VerificationRequest, ExtractedData, AuditLog
+from deepface import DeepFace
+
+def perform_face_match(id_image_path, face_image_path):
+    """
+    Compara el rostro de la INE con la selfie subida.
+    Retorna un score de confianza (0.0 a 1.0).
+    """
+    try:
+        # DeepFace buscará rostros, los alineará y comparará
+        # 'enforce_detection=False' evita que falle si la foto es borrosa
+        result = DeepFace.verify(
+            img1_path = id_image_path, 
+            img2_path = face_image_path,
+            model_name = "VGG-Face",
+            enforce_detection = False,
+            detector_backend = "opencv"
+        )
+        # El resultado incluye 'distance'. 
+        # A menor distancia, mayor es la probabilidad de que sea la misma persona.
+        is_same = result['verified']
+        score = 1.0 - result['distance'] # Normalizamos a score positivo
+        return is_same, round(score, 2)
+    except Exception as e:
+        return False, 0.0
 
 def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
     """Limpia confusiones comunes de OCR en el CURP."""
