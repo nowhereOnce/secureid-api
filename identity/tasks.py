@@ -112,7 +112,17 @@ def extract_ine_logic(ocr_results):
 @shared_task(bind=True)
 def process_ocr_task(self, request_id):
     """
-    Simula el procesamiento pesado de OCR para una identificación.
+    Executes the identity verification workflow through OCR and facial recognition.
+
+    The Global Score is calculated using a weighted sum:
+    Score = (0.5 * c_f) + (0.4 * c_l) + (0.1 * c_d)
+
+    Where:
+    - c_f (Face Confidence): Biometric similarity between the ID and the selfie.
+    - c_l (Logical Confidence): Consistency of extracted data (INE validation logic).
+    - c_d (Detection Confidence): Technical precision of the OCR engine (EasyOCR).
+
+    This represents the final level of certainty regarding the authenticity and validity of the processed document.
     """
     start_time = time.time()
     worker_node = os.environ.get('WORKER_NAME', "Unknown-Node")
