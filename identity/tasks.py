@@ -83,7 +83,7 @@ def preprocess_image(image_path):
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    
+
     return processed
 
 
@@ -125,21 +125,44 @@ def process_ocr_task(self, request_id):
         # Preprocessing and reading 
         processed_img = preprocess_image(request.image.path)
         reader = easyocr.Reader(['es'], gpu=True)
-        result = reader.readtext(processed_img, detail=0)
+        ocr_raw = reader.readtext(request.image.path, detail=1)
+
+        if ocr_raw:
+            c_d = sum([res[2] for res in ocr_raw]) / len(ocr_raw)
+        else:
+            c_d = 0.0
+        
+        result_text = [res[1] for res in ocr_raw]
 
         # Extraction Logic 
         if request.document_type == "ine":
-            full_name, structured_data = extract_ine_logic(result)
+            full_name, structured_data = extract_ine_logic(result_text)
         else:
             full_name, structured_datta = "Documento no soportado", {}
 
+        c_l = validate_ine_logic(structured_data)
+
         # Face matching
+        c_f = 0.0
+        
         if request.is_verification_mode and request.face_image:
-            is_same, score = perform_face_match(request.image.path, request.face_image.path)
+            is_same, face_score = perform_face_match(request.image.path, request.face_image.path)
+            c_f = face_score
             structured_data['face_match'] = {
                 'verified': is_same,
-                'confidence_score': score
+                'confidence_score': face_score
             }
+
+        # GLOBAL VERIFICATION SCORE 
+        w1, w2, w3 = 0.5, 0.4, 0.1
+        final_score = (w1 * c_f) + (w2 * c_l) + (w3 * c_d)
+
+        structured_data['metrics'] = {
+            'face_confidence': round(c_f, 2),
+            'logical_confidence': round(c_l, 2),
+            'ocr_precision': round(c_d, 2),
+            'global_score': round(final_score, 2)
+        }
 
         # Save
         ExtractedData.objects.update_or_create(
@@ -148,8 +171,8 @@ def process_ocr_task(self, request_id):
                 'full_name': full_name,
                 'structured_data': structured_data,
                 'document_number': structured_data.get('curp', 'Not detected'),
-                'confidence_score': 0.98,
-                'raw_json_response': {'detected_text': result}
+                'confidence_score': round(final_score, 2),
+                'raw_json_response': {'detected_text': result_text}
             }
         )
 
