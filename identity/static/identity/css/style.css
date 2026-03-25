@@ -222,6 +222,8 @@ input:checked + .slider:before { transform: translateX(20px); }
     background: #fff;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
     border: 4px solid #ccc; /* Borde por defecto */
+    flex-shrink: 0;
+    aspect-ratio: 1 / 1;
 }
 
 /* Clases de estado */
