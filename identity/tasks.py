@@ -167,12 +167,13 @@ def process_ocr_task(self, request_id):
         w1, w2, w3 = 0.5, 0.4, 0.1
         final_score = (w1 * c_f) + (w2 * c_l) + (w3 * c_d)
 
-        structured_data['metrics'] = {
-            'face_confidence': round(c_f, 2),
-            'logical_confidence': round(c_l, 2),
-            'ocr_precision': round(c_d, 2),
-            'global_score': round(final_score, 2)
-        }
+        if request.is_verification_mode:
+            structured_data['metrics'] = {
+                'face_confidence': round(c_f, 2),
+                'logical_confidence': round(c_l, 2),
+                'ocr_precision': round(c_d, 2),
+                'global_score': round(final_score, 2)
+            }
 
         # Save
         ExtractedData.objects.update_or_create(
