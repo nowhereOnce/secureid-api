@@ -24,16 +24,17 @@
         
         <hr style="border:0; border-top: 1px solid #eee; margin: 20px 0;">
 
-        <div class="mode-switch-wrapper">
-            <span style="font-size: 0.8em; color: #636e72;">Modo Verificador</span>
-            <label class="switch">
-                <input type="checkbox" id="mode-toggle" name="mode_toggle">
-                <span class="slider"></span>
-            </label>
-        </div>
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+
+            <div class="mode-switch-wrapper">
+                <span style="font-size: 0.8em; color: #636e72;">Modo Verificador</span>
+                <label class="switch">
+                    <input type="checkbox" id="mode-toggle" name="mode_toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
             
             {{ form.as_p }}
 

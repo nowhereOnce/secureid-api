@@ -21,7 +21,7 @@ def perform_face_match(id_image_path, face_image_path):
             img2_path = face_image_path,
             model_name = "VGG-Face",
             enforce_detection = False,
-            detector_backend = "opencv"
+            detector_backend = "retinaface"
         )
         # El resultado incluye 'distance'. 
         # A menor distancia, mayor es la probabilidad de que sea la misma persona.
@@ -92,6 +92,14 @@ def process_ocr_task(self, request_id):
             full_name, structured_data = extract_ine_logic(result)
         else:
             full_name, structured_datta = "Documento no soportado", {}
+
+        # Face matching
+        if request.is_verification_mode and request.face_image:
+            is_same, score = perform_face_match(request.image.path, request.face_image.path)
+            structured_data['face_match'] = {
+                'verified': is_same,
+                'confidence_score': score
+            }
 
         # Save
         ExtractedData.objects.update_or_create(
