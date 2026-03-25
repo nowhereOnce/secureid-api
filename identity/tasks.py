@@ -49,20 +49,18 @@ def perform_face_match(id_image_path, face_image_path):
     Retorna un score de confianza (0.0 a 1.0).
     """
     try:
-        # DeepFace buscará rostros, los alineará y comparará
-        # 'enforce_detection=False' evita que falle si la foto es borrosa
         result = DeepFace.verify(
             img1_path = id_image_path, 
             img2_path = face_image_path,
             model_name = "Facenet512",
-            enforce_detection = False,
+            enforce_detection = False, # evita que falle si la foto es borrosa
             detector_backend = "retinaface"
         )
-        # El resultado incluye 'distance'. 
-        # A menor distancia, mayor es la probabilidad de que sea la misma persona.
+        
         is_same = result['verified']
         score = 1.0 - result['distance'] # Normalizamos a score positivo
         return is_same, round(score, 2)
+
     except Exception as e:
         return False, 0.0
 
@@ -70,11 +68,13 @@ def perform_face_match(id_image_path, face_image_path):
 def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
     """Limpia confusiones comunes de OCR en el CURP."""
     mapping = {'O': '0', 'Z': '2', 'I': '1', 'A': '4', 'S': '5', 'B': '8'}
-    # El CURP tiene números en las posiciones 4-9 y en la última
+    
     chars = list(text.replace(" ", ""))
+
     for i in range(len(chars)):
         if i in positions and chars[i] in mapping:
             chars[i] = mapping[chars[i]]
+
     return "".join(chars)
 
 
@@ -83,6 +83,7 @@ def preprocess_image(image_path):
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    
     return processed
 
 
