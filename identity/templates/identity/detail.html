@@ -38,21 +38,40 @@
 
         {% if verification.status == 'completed' %}
             
-            {% with face_data=verification.extracted_data.structured_data.face_match %}
-            {% if face_data %}
-                <div class="biometry-card {% if face_data.verified %}success{% else %}danger{% endif %}">
+            {% with metrics=verification.extracted_data.structured_data.metrics %}
+            {% if metrics %}
+                <div class="biometry-card {% if metrics.global_score >= 0.8 %}success{% else %}danger{% endif %}">
                     
-                    <div class="confidence-meter {% if face_data.verified %}verified-border{% else %}failed-border{% endif %}">
-                        {{ face_data.confidence_score|floatformat:2 }}
+                    <div class="confidence-meter global-meter {% if metrics.global_score >= 0.8 %}verified-border{% else %}failed-border{% endif %}">
+                        {{ metrics.global_score }}
                     </div>
 
-                    <div class="result-text">
-                        <h4 style="margin:0; color: #2d3436;">
-                            RESULTADO: {% if face_data.verified %}IDENTIDAD CONFIRMADA{% else %}FALLO DE COINCIDENCIA{% endif %}
-                        </h4>
-                        <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #636e72;">
-                            La comparación facial entre la INE y la selfie arrojó un score de confianza del {{ face_data.confidence_score }}.
+                    <div class="result-text" style="flex-grow: 1;">
+                        <h4 style="margin:0;">Veredicto de Identidad</h4>
+                        <p style="margin: 2px 0 15px 0;">
+                            {% if metrics.global_score >= 0.8 %}
+                                Nivel de confianza <strong>ALTO</strong>. La identidad parece ser legítima.
+                            {% elif metrics.global_score >= 0.5 %}
+                                Nivel de confianza <strong>MEDIO</strong>. Se recomienda revisión manual.
+                            {% else %}
+                                Nivel de confianza <strong>BAJO</strong>. Posible inconsistencia o fraude.
+                            {% endif %}
                         </p>
+
+                        <div class="metrics-breakdown">
+                            <div class="metric-item">
+                                <span class="metric-label">Biometría</span>
+                                <span class="metric-value">{{ metrics.face_confidence }}</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Lógica INE</span>
+                                <span class="metric-value">{{ metrics.logical_confidence }}</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Precisión OCR</span>
+                                <span class="metric-value">{{ metrics.ocr_precision }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {% endif %}
@@ -70,7 +89,7 @@
                 </div>
 
                 {% for key, value in verification.extracted_data.structured_data.items %}
-                    {% if key != 'face_match' %}
+                    {% if key != 'face_match' and key != 'metrics' %}
                         <div class="data-item">
                             <strong>{{ key|upper }}:</strong>
                             <div class="input-group">
