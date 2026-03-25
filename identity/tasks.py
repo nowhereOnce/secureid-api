@@ -31,6 +31,7 @@ def perform_face_match(id_image_path, face_image_path):
     except Exception as e:
         return False, 0.0
 
+
 def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
     """Limpia confusiones comunes de OCR en el CURP."""
     mapping = {'O': '0', 'Z': '2', 'I': '1', 'A': '4', 'S': '5', 'B': '8'}
@@ -41,12 +42,14 @@ def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
             chars[i] = mapping[chars[i]]
     return "".join(chars)
 
+
 def preprocess_image(image_path):
     """Aplica filtros OpenCV para mejorar la precisión del OCR."""
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
     return processed
+
 
 def extract_ine_logic(ocr_results):
     """Encapsula la lógica específica para la INE."""
@@ -65,9 +68,10 @@ def extract_ine_logic(ocr_results):
             
         if text.startswith("CLAVE") and i + 1 < len(ocr_results):
             clave_raw = text.split()[-1]
-            data['clave_elector'] = clean_alphanum_data(clave_raw, positions=range(18))
+            data['clave_elector'] = clean_alphanum_data(clave_raw, positions=[6,7,8,9,10,11,12,13,15,16,17])
             
     return full_name, data
+    
 
 @shared_task(bind=True)
 def process_ocr_task(self, request_id):
