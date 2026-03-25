@@ -22,7 +22,13 @@ class VerificationRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='verifications')
     document_type = models.CharField(max_length=20, choices=DOC_TYPES, default='ine')
     image = models.ImageField(upload_to='verifications/%Y/%m/%d/')
+    face_image = models.ImageField(
+        upload_to='faces/%Y/%m/%d/', 
+        null=True, 
+        blank=True
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    is_verification_mode = models.BooleanField(default=False)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

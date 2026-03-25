@@ -9,9 +9,14 @@ def upload_identity(request):
     if request.method == 'POST':
         form = IdentityUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            # Guardamos la solicitud en Postgres (estado 'pending')
+            # obj: VerificationRequest instance
             obj = form.save(commit=False)
             obj.user = request.user
+
+            obj.is_verification_mode = "mode_toggle" in request.POST
+            if obj.is_verification_mode and 'face_image' in request.FILES:
+                obj.face_image = request.FILES['face_image']
+
             obj.save()
             
             # DISPARAMOS LA TAREA ASÍNCRONA

@@ -37,6 +37,27 @@
         <hr style="border:0; border-top: 1px solid #eee;">
 
         {% if verification.status == 'completed' %}
+            
+            {% with face_data=verification.extracted_data.structured_data.face_match %}
+            {% if face_data %}
+                <div class="biometry-card {% if face_data.verified %}success{% else %}danger{% endif %}">
+                    
+                    <div class="confidence-meter {% if face_data.verified %}verified-border{% else %}failed-border{% endif %}">
+                        {{ face_data.confidence_score|floatformat:2 }}
+                    </div>
+
+                    <div class="result-text">
+                        <h4 style="margin:0; color: #2d3436;">
+                            RESULTADO: {% if face_data.verified %}IDENTIDAD CONFIRMADA{% else %}FALLO DE COINCIDENCIA{% endif %}
+                        </h4>
+                        <p style="margin: 5px 0 0 0; font-size: 0.9em; color: #636e72;">
+                            La comparación facial entre la INE y la selfie arrojó un score de confianza del {{ face_data.confidence_score }}.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+            {% endwith %}
+
             <h3 style="margin-top:25px; color:#2d3436;">Resultados de la extracción ({{ verification.logs.first.worker_node }})</h3>
             
             <div class="data-grid">
@@ -49,13 +70,15 @@
                 </div>
 
                 {% for key, value in verification.extracted_data.structured_data.items %}
-                    <div class="data-item">
-                        <strong>{{ key|upper }}:</strong>
-                        <div class="input-group">
-                            <input type="text" value="{{ value }}" id="input-{{ forloop.counter }}">
-                            <button class="btn-copy" onclick="copyToClipboard('input-{{ forloop.counter }}')">Copiar</button>
+                    {% if key != 'face_match' %}
+                        <div class="data-item">
+                            <strong>{{ key|upper }}:</strong>
+                            <div class="input-group">
+                                <input type="text" value="{{ value }}" id="input-{{ forloop.counter }}">
+                                <button class="btn-copy" onclick="copyToClipboard('input-{{ forloop.counter }}')">Copiar</button>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 {% endfor %}
             </div>
             
