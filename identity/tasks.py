@@ -19,7 +19,7 @@ def perform_face_match(id_image_path, face_image_path):
         result = DeepFace.verify(
             img1_path = id_image_path, 
             img2_path = face_image_path,
-            model_name = "VGG-Face",
+            model_name = "Facenet512",
             enforce_detection = False,
             detector_backend = "retinaface"
         )
