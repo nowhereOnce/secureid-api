@@ -7,6 +7,41 @@ import random
 from celery import shared_task
 from .models import VerificationRequest, ExtractedData, AuditLog
 from deepface import DeepFace
+import re
+#from datetime import datetime
+
+
+def validate_ine_logic(extracted_data):
+    """
+    Calcula Cl (Confianza Lógica). 
+    Verifica estructura de CURP, Clave de Elector y su consistencia mutua.
+    """
+    score = 0.0
+    validations = 0
+    
+    curp = extracted_data.get('curp', '').upper()
+    elector_key = extracted_data.get('clave_elector', '').upper()
+    
+    # CURP
+    if re.match(r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9][0-9]$', curp):
+        score += 0.4
+    validations += 0.4
+    
+    # Clave Elector
+    if len(elector_key) == 18:
+        score += 0.3
+    validations += 0.3
+        
+    # Birth Dates
+    if curp and elector_key:
+        curp_date = curp[4:10]
+        elector_date = elector_key[6:12]
+        if curp_date == elector_date:
+            score += 0.3
+        validations += 0.3
+            
+    return round(score, 2)
+
 
 def perform_face_match(id_image_path, face_image_path):
     """
