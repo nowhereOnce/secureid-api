@@ -173,7 +173,7 @@ def process_ocr_task(self, request_id):
             }
 
         # GLOBAL VERIFICATION SCORE 
-        w1, w2, w3 = 0.5, 0.4, 0.1
+        w1, w2, w3 = 0.7, 0.25, 0.05
         final_score = (w1 * c_f) + (w2 * c_l) + (w3 * c_d)
 
         if request.is_verification_mode:
