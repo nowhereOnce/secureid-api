@@ -17,28 +17,28 @@ def validate_ine_logic(extracted_data):
     Verifica estructura de CURP, Clave de Elector y su consistencia mutua.
     """
     score = 0.0
-    validations = 0
     
     curp = extracted_data.get('curp', '').upper()
     elector_key = extracted_data.get('clave_elector', '').upper()
+    dob_short = extracted_data.get('dob_short', '')
     
     # CURP
     if re.match(r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9][0-9]$', curp):
-        score += 0.4
-    validations += 0.4
+        score += 0.3
     
     # Clave Elector
     if len(elector_key) == 18:
-        score += 0.3
-    validations += 0.3
+        score += 0.2
         
     # Birth Dates
-    if curp and elector_key:
-        curp_date = curp[4:10]
-        elector_date = elector_key[6:12]
-        if curp_date == elector_date:
-            score += 0.3
-        validations += 0.3
+    if dob_short and len(curp) >= 10 and len(elector_key) >= 12:
+        curp_date = curp[4:10]        
+        elector_date = elector_key[6:12] 
+        
+        if dob_short == curp_date == elector_date:
+            score += 0.5  
+        elif dob_short == curp_date or dob_short == elector_date:
+            score += 0.25 
             
     return round(score, 2)
 
@@ -91,9 +91,12 @@ def extract_ine_logic(ocr_results):
     """Encapsula la lógica específica para la INE."""
     data = {}
     full_name = "No detectado"
+    date_pattern = r'(\d{2})[\/\-\.](\d{2})[\/\-\.](\d{4})'
     
     for i, text in enumerate(ocr_results):
+
         clean_text = text.upper()
+
         if "NOMBRE" in clean_text and i + 3 < len(ocr_results):
             full_name = f"{ocr_results[i+2]} {ocr_results[i+3]}"
             if not ocr_results[i+4].startswith("DOMICIL"):
@@ -105,6 +108,12 @@ def extract_ine_logic(ocr_results):
         if text.startswith("CLAVE") and i + 1 < len(ocr_results):
             clave_raw = text.split()[-1]
             data['clave_elector'] = clean_alphanum_data(clave_raw, positions=[6,7,8,9,10,11,12,13,15,16,17])
+
+        date_match = re.search(date_pattern, clean_text)
+        if date_match:
+            day, month, year = date_match.groups()
+            data['fecha_nacimiento'] = f"{day}/{month}/{year}"
+            data['dob_short'] = f"{year[2:]}{month}{day}" # short version
             
     return full_name, data
     

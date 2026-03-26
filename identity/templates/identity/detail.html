@@ -89,7 +89,7 @@
                 </div>
 
                 {% for key, value in verification.extracted_data.structured_data.items %}
-                    {% if key != 'face_match' and key != 'metrics' %}
+                    {% if key != 'face_match' and key != 'metrics' and key != 'dob_short' %}
                         <div class="data-item">
                             <strong>{{ key|upper }}:</strong>
                             <div class="input-group">
