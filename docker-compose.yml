@@ -33,7 +33,7 @@ services:
   worker:
     build:
       context: .
-      dockerfile: ${WORKER_DOCKERFILE:-Dockerfile}
+      dockerfile: ${WORKER_DOCKERFILE:-Dockerfile.worker}
     command: celery -A myproject worker --loglevel=info
     devices: []
     group_add: []

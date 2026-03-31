@@ -1,0 +1,3 @@
+easyocr==1.7.1
+opencv-python-headless
+face-recognition==1.3.0
