@@ -33,14 +33,10 @@ services:
   worker:
     build:
       context: .
-      dockerfile: Dockerfile.gpu
+      dockerfile: ${WORKER_DOCKERFILE:-Dockerfile}
     command: celery -A myproject worker --loglevel=info
-    devices:
-      - "/dev/kfd:/dev/kfd"
-      - "/dev/dri:/dev/dri"
-    group_add:
-      - video
-      - render
+    devices: []
+    group_add: []
     volumes:
       - .:/app
       - ./media:/app/media
@@ -50,6 +46,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - WORKER_GPU_ENABLED=${WORKER_GPU_ENABLED:-false}
       # RX6650XT compatibility
       - HSA_OVERRIDE_GFX_VERSION=10.3.0
     depends_on:

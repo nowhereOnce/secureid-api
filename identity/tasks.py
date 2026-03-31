@@ -6,7 +6,8 @@ import time
 import random
 from celery import shared_task
 from .models import VerificationRequest, ExtractedData, AuditLog
-from deepface import DeepFace
+#from deepface import DeepFace
+import face_recognition
 import re
 #from datetime import datetime
 
@@ -45,23 +46,40 @@ def validate_ine_logic(extracted_data):
 
 def perform_face_match(id_image_path, face_image_path):
     """
-    Compara el rostro de la INE con la selfie subida.
-    Retorna un score de confianza (0.0 a 1.0).
+    Usa dlib para comparar rostros. Es más ligero y no depende de los modelos de Serengil.
     """
     try:
-        result = DeepFace.verify(
-            img1_path = id_image_path, 
-            img2_path = face_image_path,
-            model_name = "Facenet512",
-            enforce_detection = False, # evita que falle si la foto es borrosa
-            detector_backend = "retinaface"
-        )
+        # Cargamos las imágenes
+        img_id = face_recognition.load_image_file(id_image_path)
+        img_face = face_recognition.load_image_file(face_image_path)
+
+        # Obtenemos los encodings (vectores de 128 dimensiones)
+        enc_id = face_recognition.face_encodings(img_id, num_jitters=10, model="large")
+        enc_face = face_recognition.face_encodings(img_face, num_jitters=5, model="large")
+
+        if not enc_id or not enc_face:
+            return False, 0.0
+
+        # Comparamos (distancia por defecto 0.6)
+        # S = 1 - distancia (para normalizar a tu score)
+        dist = face_recognition.face_distance([enc_id[0]], enc_face[0])[0]
         
-        is_same = result['verified']
-        score = 1.0 - result['distance'] # Normalizamos a score positivo
+        # --- NUEVA CALIBRACIÓN: CURVA SIGMOIDE ---
+        # centro (B): Punto donde el score es 0.5. Lo ponemos en 0.58 (cerca del límite).
+        # inclinación (A): Qué tan rápido cae. 20 es una caída muy vertical.
+        A = 20 
+        B = 0.58
+        import math
+        # Fórmula Sigmoide: 1 / (1 + exp(A * (dist - B)))
+        score = 1 / (1 + math.exp(A * (dist - B)))
+        
+        # Un score > 0.6 suele considerarse la misma persona en dlib
+        is_same = bool(dist <= 0.55)
+        
         return is_same, round(score, 2)
 
     except Exception as e:
+        print(f"ERROR BIOMETRÍA (DLIB): {e}")
         return False, 0.0
 
 
