@@ -1,5 +1,21 @@
 # 🛡️ SecureID Engine
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python Version">
+  <img src="https://img.shields.io/badge/Django-5.0-092e20?style=for-the-badge&logo=django&logoColor=white" alt="Django Version">
+  <img src="https://img.shields.io/badge/Celery-5.3-37814A?style=for-the-badge&logo=celery&logoColor=white" alt="Celery Version">
+  <img src="https://img.shields.io/badge/Docker-24.0-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/AMD_ROCm-Hardware_Acc-ED1C24?style=flat-square&logo=amd&logoColor=white" alt="AMD GPU Support">
+  <img src="https://img.shields.io/badge/Status-Functional-success?style=flat-square" alt="Project Status">
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License">
+  <a href="https://github.com/nowhereOnce"><img src="https://img.shields.io/badge/Developer-nowhereOnce-lightgrey?style=flat-square&logo=github" alt="Developer"></a>
+</p>
+
+---
+
 ### Sistema Distribuido de Verificación de Identidad y Análisis Biométrico
 
 **SecureID Engine** es una solución robusta de grado industrial diseñada para la automatización del proceso de validación de identidad, con un enfoque específico en documentos de identificación mexicanos (INE). El sistema utiliza una arquitectura de microservicios orquestada con **Docker**, empleando procesamiento asíncrono para garantizar alta disponibilidad y escalabilidad.
