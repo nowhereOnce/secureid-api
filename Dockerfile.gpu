@@ -1,14 +1,18 @@
-# Usamos la imagen oficial de AMD que ya tiene PyTorch y ROCm integrados
+# Uses the official PyTorch image with ROCm support for GPU acceleration
+# This image includes PyTorch, CUDA, and necessary libraries for GPU-based OCR processing.
+# Notes: 
+#   -Ensure that your host system has compatible AMD GPUs and ROCm drivers installed to utilize this image effectively.
+#   -This will highly increase the image size compared to a slim Python image (+30GB), but it is necessary for GPU support in OCR tasks.
+
 FROM rocm/pytorch:latest
 
-# Configuraciones para evitar archivos basura y ver logs en tiempo real
+# Set environment variables to prevent Python from writing .pyc files and to ensure output is flushed immediately
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Instalamos dependencias de sistema necesarias para Django y PostgreSQL
-# La imagen base es Ubuntu, así que usamos apt
+# Install necessary system dependencies for Django, PostgreSQL, and OCR processing
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
@@ -18,12 +22,11 @@ RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalamos setuptools ANTES que lo demás para que pkg_resources esté disponible
+# Necessary for face_recognition and dlib
 RUN pip install --no-cache-dir setuptools==70.0.0
 
 COPY requirements.txt requirements-worker.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir -r requirements-worker.txt
 
-# Copiamos el código del SecureID Engine
 COPY . /app/

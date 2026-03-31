@@ -143,7 +143,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://redis:6379/0')
 
-CELERY_RESULT_BACKEND = 'django-db' # Guardaremos el estado en Postgres
+CELERY_RESULT_BACKEND = 'django-db' 
 
 CELERY_ACCEPT_CONTENT = ['json']
 

@@ -3,14 +3,14 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
-# Arsenal completo: compiladores y librerías de imagen
+# Compare with the GPU version, we need to install more system dependencies for OCR and face recognition tasks
 RUN apt-get update && apt-get install -y \
     libpq-dev gcc cmake g++ git libgl1 libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir setuptools==70.0.0
 
-# Instalamos AMBOS: base + pesados
+# Install both the common requirements and the worker-specific ones
 COPY requirements.txt requirements-worker.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir -r requirements-worker.txt

@@ -1,7 +1,11 @@
 from django.contrib import admin
 from .models import VerificationRequest, ExtractedData, AuditLog
 
-# Esto permite ver los datos extraídos directamente dentro de la solicitud de verificación
+# This file registers the models in the Django admin interface, 
+# allowing administrators to view and manage verification requests, 
+# extracted data, and audit logs. It also includes an inline display 
+# of extracted data within the verification request details for easy access.
+
 class ExtractedDataInline(admin.StackedInline):
     model = ExtractedData
     can_delete = False
@@ -9,17 +13,10 @@ class ExtractedDataInline(admin.StackedInline):
 
 @admin.register(VerificationRequest)
 class VerificationRequestAdmin(admin.ModelAdmin):
-    # Columnas que verás en la lista principal
     list_display = ('id', 'user', 'document_type', 'status', 'created_at')
-    
-    # Filtros laterales para búsqueda rápida
     list_filter = ('status', 'document_type', 'created_at')
-    
-    # Buscador por usuario o ID
     search_fields = ('user__username', 'id')
-    
-    # Incluimos los datos del OCR en la misma vista
-    inlines = [ExtractedDataInline]
+    inlines = [ExtractedDataInline] # Allows viewing extracted data directly from the verification request admin page
 
 @admin.register(AuditLog)
 class AuditLogAdmin(admin.ModelAdmin):
