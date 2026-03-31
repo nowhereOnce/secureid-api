@@ -1,15 +1,10 @@
-import easyocr
-import cv2
-import numpy as np
 import os
 import time
 import random
 from celery import shared_task
 from .models import VerificationRequest, ExtractedData, AuditLog
 #from deepface import DeepFace
-import face_recognition
 import re
-#from datetime import datetime
 
 
 def validate_ine_logic(extracted_data):
@@ -56,6 +51,9 @@ def perform_face_match(id_image_path, face_image_path):
     """
     Usa dlib para comparar rostros. Es más ligero y no depende de los modelos de Serengil.
     """
+    import math
+    import face_recognition
+    
     try:
         # Cargamos las imágenes
         img_id = face_recognition.load_image_file(id_image_path)
@@ -77,7 +75,7 @@ def perform_face_match(id_image_path, face_image_path):
         # inclinación (A): Qué tan rápido cae. 20 es una caída muy vertical.
         A = 20 
         B = 0.58
-        import math
+        
         # Fórmula Sigmoide: 1 / (1 + exp(A * (dist - B)))
         score = 1 / (1 + math.exp(A * (dist - B)))
         
@@ -106,6 +104,8 @@ def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
 
 def preprocess_image(image_path):
     """Aplica filtros OpenCV para mejorar la precisión del OCR."""
+    import cv2
+    
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     processed = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
@@ -159,6 +159,8 @@ def process_ocr_task(self, request_id):
 
     This represents the final level of certainty regarding the authenticity and validity of the processed document.
     """
+    import easyocr  
+    
     start_time = time.time()
     worker_node = os.environ.get('WORKER_NAME', "Unknown-Node")
     

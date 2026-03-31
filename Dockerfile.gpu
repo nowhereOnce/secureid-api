@@ -21,10 +21,9 @@ RUN apt-get update && apt-get install -y \
 # Instalamos setuptools ANTES que lo demás para que pkg_resources esté disponible
 RUN pip install --no-cache-dir setuptools==70.0.0
 
-# Copiamos los requerimientos y los instalamos
-# (No instalamos torch aquí porque ya viene en la imagen base)
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt requirements-worker.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r requirements-worker.txt
 
 # Copiamos el código del SecureID Engine
 COPY . /app/

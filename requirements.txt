@@ -1,6 +1,4 @@
 Django>=4.2,<5.1
-easyocr==1.7.1
-opencv-python-headless
 psycopg2-binary>=2.9.0
 gunicorn
 python-dotenv==1.2.1
@@ -8,7 +6,3 @@ pillow==12.1.1
 celery==5.3.6
 redis==5.0.1
 django-celery-results==2.5.1
-# Face recognition with dlib
-face-recognition==1.3.0
-# Pre-trained models for face_recognition (optional - will be downloaded at runtime if missing)
-# git+https://github.com/ageitgey/face_recognition_models
