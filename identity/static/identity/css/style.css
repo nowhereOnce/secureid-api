@@ -126,7 +126,7 @@ select, input[type="file"] {
 
 .main-header {
     background-color: white;
-    border-bottom: 2px solid #eee; /* Línea sutil de separación */
+    border-bottom: 2px solid #eee;
     border-bottom-left-radius: 12px; 
     border-bottom-right-radius: 12px; 
     padding: 15px 0;
@@ -154,7 +154,7 @@ select, input[type="file"] {
 }
 
 .logo span {
-    color: #0984e3; /* Nuestro azul de acción */
+    color: #0984e3; 
 }
 
 .nav-links a {
@@ -226,7 +226,8 @@ input:checked + .slider:before { transform: translateX(20px); }
     aspect-ratio: 1 / 1;
 }
 
-/* Clases de estado */
+/* State classes */
+
 .confidence-meter.verified-border { border-color: #27ae60; color: #27ae60; }
 .confidence-meter.failed-border { border-color: #c0392b; color: #c0392b; }
 
@@ -245,7 +246,8 @@ input:checked + .slider:before { transform: translateX(20px); }
 .biometry-card.success { border-left: 6px solid #27ae60; }
 .biometry-card.danger { border-left: 6px solid #c0392b; }
 
-/* El contenedor principal de métricas */
+/* Metrics Breakdown */
+
 .metrics-breakdown {
     display: flex;
     justify-content: space-around;
@@ -274,7 +276,6 @@ input:checked + .slider:before { transform: translateX(20px); }
     color: #2d3436;
 }
 
-/* Ajuste para que el medidor global sea más imponente */
 .global-meter {
     transform: scale(1.1);
     margin-right: 10px;
