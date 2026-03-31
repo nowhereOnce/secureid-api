@@ -26,10 +26,14 @@ def validate_ine_logic(extracted_data):
     # CURP
     if re.match(r'^[A-Z]{4}[0-9]{6}[HM][A-Z]{5}[A-Z0-9][0-9]$', curp):
         score += 0.3
+    else:
+        print("curp does not match.")
     
     # Clave Elector
     if len(elector_key) == 18:
         score += 0.2
+    else:
+        print("clave_elector does not match.")
         
     # Birth Dates
     if dob_short and len(curp) >= 10 and len(elector_key) >= 12:
@@ -40,6 +44,10 @@ def validate_ine_logic(extracted_data):
             score += 0.5  
         elif dob_short == curp_date or dob_short == elector_date:
             score += 0.25 
+        else:
+            print("birth_dates do not match.")
+    else:
+        print("dob_short (date of birth) coudn't be found by the OCR.")
             
     return round(score, 2)
 
@@ -115,7 +123,7 @@ def extract_ine_logic(ocr_results):
 
         clean_text = text.upper()
 
-        if "NOMBRE" in clean_text and i + 3 < len(ocr_results):
+        if "NOMBRE" in clean_text or "NOYBRE" in clean_text and i + 3 < len(ocr_results):
             full_name = f"{ocr_results[i+2]} {ocr_results[i+3]}"
             if not ocr_results[i+4].startswith("DOMICIL"):
                 full_name += f" {ocr_results[i+4]}"
