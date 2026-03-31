@@ -19,7 +19,7 @@ def upload_identity(request):
 
             obj.save()
             
-            # DISPARAMOS LA TAREA ASÍNCRONA
+            # Start the OCR processing task asynchronously
             process_ocr_task.delay(str(obj.id))
             
             return redirect('verification_detail', pk=obj.id)
@@ -29,6 +29,6 @@ def upload_identity(request):
 
 @login_required
 def verification_detail(request, pk):
-    # Aseguramos que solo el dueño de la solicitud pueda verla
+    # Only allow access to the verification details if the request belongs to the user
     verification = get_object_or_404(VerificationRequest, pk=pk, user=request.user)
     return render(request, 'identity/detail.html', {'verification': verification})
