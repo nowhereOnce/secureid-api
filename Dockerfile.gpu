@@ -12,8 +12,14 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
+    cmake \
+    g++ \
+    git \
     tesseract-ocr \
     && rm -rf /var/lib/apt/lists/*
+
+# Instalamos setuptools ANTES que lo demás para que pkg_resources esté disponible
+RUN pip install --no-cache-dir setuptools==70.0.0
 
 # Copiamos los requerimientos y los instalamos
 # (No instalamos torch aquí porque ya viene en la imagen base)

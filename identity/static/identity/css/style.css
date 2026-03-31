@@ -244,3 +244,38 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .biometry-card.success { border-left: 6px solid #27ae60; }
 .biometry-card.danger { border-left: 6px solid #c0392b; }
+
+/* El contenedor principal de métricas */
+.metrics-breakdown {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+    gap: 10px;
+}
+
+.metric-item {
+    text-align: center;
+    flex: 1;
+}
+
+.metric-label {
+    display: block;
+    font-size: 0.75em;
+    color: #636e72;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.metric-value {
+    font-weight: 700;
+    font-size: 0.9em;
+    color: #2d3436;
+}
+
+/* Ajuste para que el medidor global sea más imponente */
+.global-meter {
+    transform: scale(1.1);
+    margin-right: 10px;
+}
