@@ -3,7 +3,11 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class VerificationRequest(models.Model):
-    """Entidad maestra para el seguimiento de solicitudes de identidad."""
+    """
+    Main model representing an identity verification request.
+    Stores the uploaded document, optional selfie, and tracks the processing status.
+    """
+    
     STATUS_CHOICES = [
         ('pending', 'Pendiente'),
         ('processing', 'Procesando'),
@@ -37,7 +41,10 @@ class VerificationRequest(models.Model):
         return f"{self.user.username} - {self.document_type} ({self.status})"
 
 class ExtractedData(models.Model):
-    """Resultados detallados del OCR procesado por los Workers."""
+    """
+    Model to store the extracted data from the identity verification process.
+    """
+    
     request = models.OneToOneField(VerificationRequest, on_delete=models.CASCADE, related_name='extracted_data')
 
     # Universal Data
@@ -54,15 +61,18 @@ class ExtractedData(models.Model):
     # Metadata
     document_number = models.CharField(max_length=100, blank=True, null=True)
     confidence_score = models.FloatField(default=0.0)
-    raw_json_response = models.JSONField(blank=True, null=True) # Para guardar la respuesta bruta del motor
+    raw_json_response = models.JSONField(blank=True, null=True) # Storage for raw OCR output and any additional metadata
 
     def __str__(self):
         return f"Data for {self.request.id}"
 
 class AuditLog(models.Model):
-    """Registro de trazabilidad para el sistema distribuido."""
+    """
+    Model to log the processing of each verification request, including execution time, worker node, and any errors encountered.
+    """
+    
     request = models.ForeignKey(VerificationRequest, on_delete=models.CASCADE, related_name='logs')
-    worker_node = models.CharField(max_length=100) # Ej: "Laptop-Mint" o "Desktop-Win-GPU"
+    worker_node = models.CharField(max_length=100)
     execution_time = models.FloatField(help_text="Tiempo en segundos")
     error_message = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
