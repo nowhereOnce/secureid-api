@@ -26,6 +26,6 @@ urlpatterns = [
     path('verification/<uuid:pk>/', verification_detail, name='verification_detail'),
 ]
 
-# Esto permite que VS Code y el navegador vean las fotos en desarrollo
+# This is only for development; in production, serve media files through a proper web server
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

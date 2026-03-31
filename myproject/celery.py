@@ -1,13 +1,13 @@
 import os
 from celery import Celery
 
-# Establece el módulo de configuración de Django
+# Set the Django settings module
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
 
 app = Celery('myproject')
 
-# Usamos el prefijo CELERY_ en settings.py para las configuraciones
+# Use CELERY_ settings in settings.py
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-# Busca tareas automáticamente en todas tus apps (como identity/tasks.py)
+# Auto-discover tasks in all installed apps (e.g. identity/tasks.py)
 app.autodiscover_tasks()
