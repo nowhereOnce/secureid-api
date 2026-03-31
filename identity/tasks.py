@@ -9,9 +9,14 @@ import re
 
 def validate_ine_logic(extracted_data):
     """
-    Calcula Cl (Confianza Lógica). 
-    Verifica estructura de CURP, Clave de Elector y su consistencia mutua.
+    Calculates Cl (Logical Confidence) based on the presence and consistency of key INE data points: 
+        - CURP
+        - Clave de Elector
+        - Date of Birth
+    Each element contributes to the overall confidence score, 
+    which reflects the likelihood that the extracted data is valid and consistent with INE standards.
     """
+    
     score = 0.0
     
     curp = extracted_data.get('curp', '').upper()
@@ -49,48 +54,48 @@ def validate_ine_logic(extracted_data):
 
 def perform_face_match(id_image_path, face_image_path):
     """
-    Usa dlib para comparar rostros. Es más ligero y no depende de los modelos de Serengil.
+    Compares the face in the ID image with the face in the selfie using dlib's face recognition.
+     - Returns a boolean indicating if they match and a confidence score between 0 and 1.
+     - The confidence score is calculated using a sigmoid function based on the distance between face encodings
     """
+    
     import math
     import face_recognition
     
     try:
-        # Cargamos las imágenes
         img_id = face_recognition.load_image_file(id_image_path)
         img_face = face_recognition.load_image_file(face_image_path)
 
-        # Obtenemos los encodings (vectores de 128 dimensiones)
         enc_id = face_recognition.face_encodings(img_id, num_jitters=10, model="large")
         enc_face = face_recognition.face_encodings(img_face, num_jitters=5, model="large")
 
         if not enc_id or not enc_face:
             return False, 0.0
 
-        # Comparamos (distancia por defecto 0.6)
-        # S = 1 - distancia (para normalizar a tu score)
         dist = face_recognition.face_distance([enc_id[0]], enc_face[0])[0]
         
-        # --- NUEVA CALIBRACIÓN: CURVA SIGMOIDE ---
-        # centro (B): Punto donde el score es 0.5. Lo ponemos en 0.58 (cerca del límite).
-        # inclinación (A): Qué tan rápido cae. 20 es una caída muy vertical.
+        # Sigmoid function to convert distance to a confidence score between 0 and 1
         A = 20 
         B = 0.58
         
-        # Fórmula Sigmoide: 1 / (1 + exp(A * (dist - B)))
         score = 1 / (1 + math.exp(A * (dist - B)))
         
-        # Un score > 0.6 suele considerarse la misma persona en dlib
+        # Threshold of 0.55 is commonly used for dlib-based face recognition to determine a match
         is_same = bool(dist <= 0.55)
         
         return is_same, round(score, 2)
 
     except Exception as e:
-        print(f"ERROR BIOMETRÍA (DLIB): {e}")
+        print(f"ERROR DURING BIOMETRIC ANALYSIS (DLIB): {e}")
         return False, 0.0
 
 
 def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
-    """Limpia confusiones comunes de OCR en el CURP."""
+    """
+    Applies common OCR error corrections for alphanumeric data, 
+    specifically targeting characters that are often misread in INE documents.
+    """
+    
     mapping = {'O': '0', 'Z': '2', 'I': '1', 'A': '4', 'S': '5', 'B': '8'}
     
     chars = list(text.replace(" ", ""))
@@ -103,7 +108,10 @@ def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
 
 
 def preprocess_image(image_path):
-    """Aplica filtros OpenCV para mejorar la precisión del OCR."""
+    """
+    Basic preprocessing to enhance OCR accuracy, including grayscale conversion and thresholding.
+    """
+    
     import cv2
     
     img = cv2.imread(image_path)
@@ -114,7 +122,10 @@ def preprocess_image(image_path):
 
 
 def extract_ine_logic(ocr_results):
-    """Encapsula la lógica específica para la INE."""
+    """
+    Extracts structured data from OCR results based on INE document layout and common text patterns.
+    """
+    
     data = {}
     full_name = "No detectado"
     date_pattern = r'(\d{2})[\/\-\.](\d{2})[\/\-\.](\d{4})'
@@ -159,6 +170,7 @@ def process_ocr_task(self, request_id):
 
     This represents the final level of certainty regarding the authenticity and validity of the processed document.
     """
+    
     import easyocr  
     
     start_time = time.time()
@@ -236,7 +248,7 @@ def process_ocr_task(self, request_id):
             execution_time=time.time() - start_time,
             error_message=str(e)
         )
-        return f"Error: Request {request_id}. Nodo: {worker_node}\n Error: {str(e)}"
+        return f"Error: Request {request_id}. Node: {worker_node}\n Error: {str(e)}"
     
 
     execution_time = time.time() - start_time
@@ -247,4 +259,4 @@ def process_ocr_task(self, request_id):
         execution_time=execution_time
     )
 
-    return f"OCR completado por {worker_node} en {execution_time:.2f}s"
+    return f"OCR completed by {worker_node} in {execution_time:.2f}s"
