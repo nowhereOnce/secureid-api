@@ -18,18 +18,18 @@
             </nav>
         </div>
     </header>
-    <div class="card" style="max-width: 500px; margin: 50px auto;">
-        <h2 style="text-align: center; color: #2d3436;">Verificación de Identidad</h2>
-        <p style="text-align: center; color: #636e72;">Sube una imagen clara de tu documento.</p>
+    <div class="card upload-card-custom">
+        <h2 class="upload-title">Verificación de Identidad</h2>
+        <p class="upload-subtitle">Sube una imagen clara de tu documento.</p>
         
-        <hr style="border:0; border-top: 1px solid #eee; margin: 20px 0;">
+        <hr class="upload-divider">
 
 
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             <div class="mode-switch-wrapper">
-                <span style="font-size: 0.8em; color: #636e72;">Modo Verificador</span>
+                <span class="mode-label">Modo Verificador</span>
                 <label class="switch">
                     <input type="checkbox" id="mode-toggle" name="mode_toggle">
                     <span class="slider"></span>
@@ -38,23 +38,23 @@
             
             {{ form.as_p }}
 
-            <div id="selfie-section" style="display: none; margin-top: 20px;">
+            <div id="selfie-section" class="selfie-section">
                 <label>Foto del Rostro (Referencia):</label>
                 <input type="file" name="face_image" id="face_input">
-                <img id="face-preview" src="#" alt="Preview" style="display:none; max-width: 150px; margin-top: 10px;">
+                <img id="face-preview" src="#" alt="Preview" class="face-preview-img">
             </div>
 
             <img id="image-preview" src="#" alt="Vista previa de la identificación">
 
-            <div style="text-align: center; margin-top: 25px;">
-                <button type="submit" class="btn-secondary" style="width: 100%; border: none; cursor: pointer;">
+            <div class="submit-container">
+                <button type="submit" class="btn-secondary submit-btn-custom">
                     Iniciar Procesamiento
                 </button>
             </div>
         </form>
 
-        <p style="text-align: center; margin-top: 20px;">
-            <small style="color: #b2bec3;">
+        <p class="footer-container">
+            <small class="footer-text">
                 Procesamiento asíncrono vía Celery.
             </small>
         </p>

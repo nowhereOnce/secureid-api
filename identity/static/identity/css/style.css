@@ -280,3 +280,39 @@ input:checked + .slider:before { transform: translateX(20px); }
     transform: scale(1.1);
     margin-right: 10px;
 }
+
+/* --- Migrated Styles from Templates --- */
+
+/* detail.html */
+.detail-req-title { margin: 0 0 10px 0; }
+.detail-req-id { color: #636e72; font-size: 0.8em; }
+.detail-doc-label { margin-top: 0; font-size: 0.8em; color: #636e72; }
+.detail-divider { border: 0; border-top: 1px solid #eee; }
+.result-text { flex-grow: 1; }
+.verdict-title { margin: 0; }
+.verdict-desc { margin: 2px 0 15px 0; }
+.results-title { margin-top: 25px; color: #2d3436; }
+.action-container { margin-top: 35px; border-top: 1px solid #eee; padding-top: 25px; text-align: center; }
+.error-container { padding: 20px; color: #c0392b; background: #ffebee; border-radius: 8px; margin-top: 20px; }
+.error-link { color: #c0392b; }
+.processing-container { text-align: center; padding: 40px 0; }
+.processing-text { font-style: italic; color: #636e72; }
+
+/* upload.html */
+.upload-card-custom { max-width: 500px; margin: 50px auto; }
+.upload-title { text-align: center; color: #2d3436; }
+.upload-subtitle { text-align: center; color: #636e72; }
+.upload-divider { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+.mode-label { font-size: 0.8em; color: #636e72; }
+.selfie-section { display: none; margin-top: 20px; }
+.face-preview-img { display: none; max-width: 150px; margin-top: 10px; }
+.submit-container { text-align: center; margin-top: 25px; }
+.submit-btn-custom { width: 100%; border: none; cursor: pointer; }
+.footer-container { text-align: center; margin-top: 20px; }
+.footer-text { color: #b2bec3; }
+
+/* success.html */
+body.success-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 50px auto; text-align: center; background-color: #fff; }
+.success-card-custom { border: 1px solid #ddd; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: white; margin: auto; }
+.success-icon { font-size: 50px; color: #28a745; }
+.success-btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }

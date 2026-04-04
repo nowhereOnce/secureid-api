@@ -20,8 +20,8 @@
     <div class="card">
         <div class="header-section">
             <div>
-                <h1 style="margin:0 0 10px 0;">Solicitud </h1>
-                <small style="color:#636e72; font-size:0.8em;">{{ verification.id }}</small>
+                <h1 class="detail-req-title">Solicitud </h1>
+                <small class="detail-req-id">{{ verification.id }}</small>
                 <p><strong>Tipo:</strong> {{ verification.get_document_type_display }}</p>
                 <div class="status-badge status-{{ verification.status }}">
                     {{ verification.get_status_display }}
@@ -29,12 +29,12 @@
             </div>
             
             <div class="image-col">
-                <p style="margin-top:0; font-size:0.8em; color:#636e72;">Documento original:</p>
+                <p class="detail-doc-label">Documento original:</p>
                 <img src="{{ verification.image.url }}" class="preview-img" alt="Documento">
             </div>
         </div>
 
-        <hr style="border:0; border-top: 1px solid #eee;">
+        <hr class="detail-divider">
 
         {% if verification.status == 'completed' %}
             
@@ -46,9 +46,9 @@
                         {{ metrics.global_score }}
                     </div>
 
-                    <div class="result-text" style="flex-grow: 1;">
-                        <h4 style="margin:0;">Veredicto de Identidad</h4>
-                        <p style="margin: 2px 0 15px 0;">
+                    <div class="result-text">
+                        <h4 class="verdict-title">Veredicto de Identidad</h4>
+                        <p class="verdict-desc">
                             {% if metrics.global_score >= 0.8 %}
                                 Nivel de confianza <strong>ALTO</strong>. La identidad parece ser legítima.
                             {% elif metrics.global_score >= 0.6 %}
@@ -77,7 +77,7 @@
             {% endif %}
             {% endwith %}
 
-            <h3 style="margin-top:25px; color:#2d3436;">Resultados de la extracción ({{ verification.logs.first.worker_node }})</h3>
+            <h3 class="results-title">Resultados de la extracción ({{ verification.logs.first.worker_node }})</h3>
             
             <div class="data-grid">
                 <div class="data-item">
@@ -101,21 +101,21 @@
                 {% endfor %}
             </div>
             
-            <div style="margin-top:35px; border-top: 1px solid #eee; padding-top:25px; text-align: center;">
+            <div class="action-container">
                 <a href="{% url 'upload' %}" class="btn-secondary">
                     Realizar otra verificación
                 </a>
             </div>
 
         {% elif verification.status == 'failed' %}
-            <div style="padding:20px; color:#c0392b; background:#ffebee; border-radius:8px; margin-top:20px;">
+            <div class="error-container">
                 <strong>Error:</strong> No se pudo procesar el documento. Verifica la calidad de la imagen.
-                <br><a href="{% url 'upload' %}" style="color:#c0392b;">Reintentar carga</a>
+                <br><a href="{% url 'upload' %}" class="error-link">Reintentar carga</a>
             </div>
 
         {% else %}
-            <div style="text-align:center; padding:40px 0;">
-                <p style="font-style:italic; color:#636e72;">Procesando datos en el sistema distribuido... La página se actualizará automáticamente.</p>
+            <div class="processing-container">
+                <p class="processing-text">Procesando datos en el sistema distribuido... La página se actualizará automáticamente.</p>
                 <script>
                     setTimeout(function(){
                         location.reload();
