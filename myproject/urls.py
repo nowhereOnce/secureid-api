@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from identity.views import upload_identity, verification_detail
+from identity.views import upload_identity, verification_detail, privacy_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('upload/', upload_identity, name='upload'),
     path('verification/<uuid:pk>/', verification_detail, name='verification_detail'),
+    path('privacy/', privacy_view, name='privacy'),
 ]
 
 # This is only for development; in production, serve media files through a proper web server

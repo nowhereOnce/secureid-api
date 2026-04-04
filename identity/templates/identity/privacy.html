@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviso de Privacidad - SecureID Engine</title>
+    <link rel="stylesheet" href="{% static 'identity/css/style.css' %}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="{% url 'upload' %}" class="logo">
+                SECUREID<span>ENGINE</span>
+            </a>
+            <nav class="nav-links">
+                <a href="{% url 'upload' %}">Nueva Carga</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="card" style="max-width: 800px; margin: 40px auto; line-height: 1.6;">
+        <h1>Aviso de Privacidad (Demo & Open Source)</h1>
+        <p><strong>Última actualización:</strong> 4 de abril de 2026</p>
+
+        <section>
+            <h3>1. Naturaleza del Proyecto</h3>
+            <p>Este software, <strong>SecureID Engine</strong>, es un proyecto estrictamente <strong>demostrativo y de código abierto</strong>. No constituye una empresa, servicio comercial o entidad legal. Su propósito es servir como prueba de concepto técnica para el procesamiento de identificación oficial (INE/Pasaporte) mediante OCR y Biometría.</p>
+        </section>
+
+        <section>
+            <h3>2. Responsabilidad del Tratamiento</h3>
+            <p>Al ser un software auto-hospedado (on-premise), el <strong>Responsable</strong> de los datos personales es la persona o entidad que ejecuta esta instancia del software. El desarrollador original no tiene acceso, control ni capacidad de visualización sobre los datos, imágenes o resultados generados en esta instalación específica.</p>
+        </section>
+
+        <section>
+            <h3>3. Datos Personales Procesados</h3>
+            <p>El sistema está diseñado para procesar los siguientes datos sensibles contenidos en identificaciones oficiales:</p>
+            <ul>
+                <li>Nombre completo, CURP y Clave de Elector.</li>
+                <li>Fotografía del rostro (biometría).</li>
+                <li>Domicilio y firma (si están presentes en el documento).</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3>4. Finalidad del Tratamiento</h3>
+            <p>Los datos se procesan exclusivamente para:</p>
+            <ol>
+                <li>Extraer información textual mediante reconocimiento óptico de caracteres (OCR).</li>
+                <li>Validar la coincidencia biométrica entre la identificación y una fotografía de referencia.</li>
+                <li>Demostrar la capacidad técnica del sistema distribuido.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h3>5. Almacenamiento y Seguridad</h3>
+            <p>Las imágenes y datos extraídos se almacenan temporalmente en la base de datos y sistema de archivos de esta instancia. Se recomienda al usuario que despliega este software implementar medidas de seguridad adecuadas y proceder con la eliminación de los datos tras completar las pruebas técnicas.</p>
+        </section>
+
+        <section>
+            <h3>6. Consentimiento</h3>
+            <p>Al utilizar esta herramienta y subir documentos, usted reconoce que lo hace bajo su propio riesgo y en un entorno de pruebas, otorgando su consentimiento para el procesamiento técnico de la información suministrada.</p>
+        </section>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="{% url 'upload' %}" class="btn-secondary">Volver al inicio</a>
+        </div>
+    </div>
+</body>
+</html>

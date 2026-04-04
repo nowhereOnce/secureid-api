@@ -4,6 +4,9 @@ from .forms import IdentityUploadForm
 from .tasks import process_ocr_task
 from .models import VerificationRequest
 
+def privacy_view(request):
+    return render(request, 'identity/privacy.html')
+
 @login_required
 def upload_identity(request):
     if request.method == 'POST':

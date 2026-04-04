@@ -46,6 +46,13 @@
 
             <img id="image-preview" src="#" alt="Vista previa de la identificación">
 
+            <div style="margin-top: 20px; font-size: 0.9em; color: #636e72;">
+                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-weight: normal;">
+                    <input type="checkbox" required style="width: auto; margin-top: 4px;">
+                    <span>He leído y acepto el <a href="{% url 'privacy' %}" target="_blank" style="color: #0984e3;">Aviso de Privacidad</a> y entiendo el tratamiento que se le dará a mis datos personales.</span>
+                </label>
+            </div>
+
             <div class="submit-container">
                 <button type="submit" class="btn-secondary submit-btn-custom">
                     Iniciar Procesamiento
@@ -55,7 +62,7 @@
 
         <p class="footer-container">
             <small class="footer-text">
-                Procesamiento asíncrono vía Celery.
+                Procesamiento asíncrono vía Celery. | <a href="{% url 'privacy' %}" style="color: #b2bec3;">Aviso de Privacidad</a>
             </small>
         </p>
     </div>
