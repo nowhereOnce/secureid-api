@@ -116,31 +116,10 @@
         {% else %}
             <div class="processing-container">
                 <p class="processing-text">Procesando datos en el sistema distribuido... La página se actualizará automáticamente.</p>
-                <script>
-                    setTimeout(function(){
-                        location.reload();
-                    }, 4000);
-                </script>
             </div>
         {% endif %}
     </div>
 
-    <script>
-        function copyToClipboard(elementId) {
-            const copyText = document.getElementById(elementId);
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "¡Copiado!";
-            btn.style.background = "#27ae60";
-            setTimeout(() => { 
-                btn.innerText = originalText; 
-                btn.style.background = "#34495e";
-            }, 1500);
-        }
-    </script>
+    <script src="{% static 'identity/js/detail.js' %}"></script>
 </body>
 </html>

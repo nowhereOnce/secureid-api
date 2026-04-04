@@ -60,24 +60,6 @@
         </p>
     </div>
 
-    <script>
-        const imageInput = document.querySelector('input[type="file"]');
-        const preview = document.getElementById('image-preview');
-
-        imageInput.onchange = evt => {
-            const [file] = imageInput.files;
-            if (file) {
-                preview.src = URL.createObjectURL(file);
-                preview.style.display = 'block';
-            }
-        }
-
-        const toggle = document.getElementById('mode-toggle');
-        const selfieSection = document.getElementById('selfie-section');
-
-        toggle.onchange = () => {
-            selfieSection.style.display = toggle.checked ? 'block' : 'none';
-        };
-    </script>
+    <script src="{% static 'identity/js/upload.js' %}"></script>
 </body>
 </html>
