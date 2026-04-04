@@ -9,7 +9,6 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/AMD_ROCm-Hardware_Acc-ED1C24?style=flat-square&logo=amd&logoColor=white" alt="AMD GPU Support">
-  <img src="https://img.shields.io/badge/Status-Functional-success?style=flat-square" alt="Project Status">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License">
   <a href="https://github.com/nowhereOnce"><img src="https://img.shields.io/badge/Developer-nowhereOnce-lightgrey?style=flat-square&logo=github" alt="Developer"></a>
 </p>
@@ -156,6 +155,11 @@ Para permitir que el contenedor acceda directamente al kernel de video y a los d
 
 ### 3. Consideraciones Técnicas
 * **Imagen Base:** El uso de GPU requiere la imagen `rocm/pytorch`, la cual incluye las librerías necesarias para la comunicación con los drivers de AMD en sistemas Linux (probado en CachyOS/Arch Linux). Esta versión de la imagen aumenta considerablemente su tamaño respecto a la versión original.
+
+-----
+## 🙏 Agradecimientos
+
+Un agradecimiento especial al **Ing. Angel Brito**, por sus invaluables observaciones y el feedback técnico proporcionado. Sus sugerencias fueron fundamentales para elevar la calidad de este proyecto y asegurar un estándar profesional desde su primer lanzamiento.
 
 -----
 
