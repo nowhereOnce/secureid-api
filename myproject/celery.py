@@ -1,3 +1,8 @@
+"""
+This module was created and tested with Python 3.11.
+
+Celery configuration for the project.
+"""
 import os
 from celery import Celery
 

@@ -1,20 +1,24 @@
+"""
+This module was created and tested with Python 3.11.
+"""
+
 import os
 import time
 import random
+import re
 from celery import shared_task
 from .models import VerificationRequest, ExtractedData, AuditLog
-#from deepface import DeepFace
-import re
-
 
 def validate_ine_logic(extracted_data):
     """
-    Calculates Cl (Logical Confidence) based on the presence and consistency of key INE data points: 
+    Calculate Logical Confidence based on INE data consistency.
+
+    Checks for the presence and consistency of:
         - CURP
         - Clave de Elector
         - Date of Birth
-    Each element contributes to the overall confidence score, 
-    which reflects the likelihood that the extracted data is valid and consistent with INE standards.
+
+    Returns a confidence score between 0 and 1.
     """
     
     score = 0.0
@@ -54,9 +58,10 @@ def validate_ine_logic(extracted_data):
 
 def perform_face_match(id_image_path, face_image_path):
     """
-    Compares the face in the ID image with the face in the selfie using dlib's face recognition.
-     - Returns a boolean indicating if they match and a confidence score between 0 and 1.
-     - The confidence score is calculated using a sigmoid function based on the distance between face encodings
+    Compare the face in the ID image with the face in the selfie.
+
+    Uses face_recognition (dlib-based) to calculate biometric similarity.
+    Returns a tuple (is_same, confidence_score).
     """
     
     import math
@@ -92,8 +97,9 @@ def perform_face_match(id_image_path, face_image_path):
 
 def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
     """
-    Applies common OCR error corrections for alphanumeric data, 
-    specifically targeting characters that are often misread in INE documents.
+    Apply OCR error corrections for alphanumeric data.
+
+    Targets characters that are often misread in INE documents (e.g., 'O' vs '0').
     """
     
     mapping = {'O': '0', 'Z': '2', 'I': '1', 'A': '4', 'S': '5', 'B': '8'}
@@ -109,7 +115,9 @@ def clean_alphanum_data(text, positions = [4, 5, 6, 7, 8, 9, 17]):
 
 def preprocess_image(image_path):
     """
-    Basic preprocessing to enhance OCR accuracy, including grayscale conversion and thresholding.
+    Preprocess image to enhance OCR accuracy.
+
+    Includes grayscale conversion and Otsu's thresholding.
     """
     
     import cv2
@@ -123,7 +131,7 @@ def preprocess_image(image_path):
 
 def extract_ine_logic(ocr_results):
     """
-    Extracts structured data from OCR results based on INE document layout and common text patterns.
+    Extract structured data from OCR results based on INE document layout.
     """
     
     data = {}
@@ -158,17 +166,13 @@ def extract_ine_logic(ocr_results):
 @shared_task(bind=True)
 def process_ocr_task(self, request_id):
     """
-    Executes the identity verification workflow through OCR and facial recognition.
+    Execute the identity verification workflow.
 
-    The Global Score is calculated using a weighted sum:
-    Score = (0.5 * c_f) + (0.4 * c_l) + (0.1 * c_d)
-
-    Where:
-    - c_f (Face Confidence): Biometric similarity between the ID and the selfie.
-    - c_l (Logical Confidence): Consistency of extracted data (INE validation logic).
-    - c_d (Detection Confidence): Technical precision of the OCR engine (EasyOCR).
-
-    This represents the final level of certainty regarding the authenticity and validity of the processed document.
+    Workflow includes OCR extraction and optional facial recognition.
+    Calculates a Global Trust Score based on:
+    - Face Confidence (70%)
+    - Logical Confidence (25%)
+    - Detection Confidence (5%)
     """
     
     import easyocr  
@@ -197,7 +201,7 @@ def process_ocr_task(self, request_id):
         if request.document_type == "ine":
             full_name, structured_data = extract_ine_logic(result_text)
         else:
-            full_name, structured_datta = "Documento no soportado", {}
+            full_name, structured_data = "Documento no soportado", {}
 
         c_l = validate_ine_logic(structured_data)
 

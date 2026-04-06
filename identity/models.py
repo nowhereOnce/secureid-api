@@ -1,3 +1,7 @@
+"""
+This module was created and tested with Python 3.11.
+"""
+
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
@@ -5,6 +9,7 @@ from django.contrib.auth.models import User
 class VerificationRequest(models.Model):
     """
     Main model representing an identity verification request.
+
     Stores the uploaded document, optional selfie, and tracks the processing status.
     """
     
@@ -38,6 +43,9 @@ class VerificationRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        """
+        Return a string representation of the VerificationRequest.
+        """
         return f"{self.user.username} - {self.document_type} ({self.status})"
 
 class ExtractedData(models.Model):
@@ -64,11 +72,16 @@ class ExtractedData(models.Model):
     raw_json_response = models.JSONField(blank=True, null=True) # Storage for raw OCR output and any additional metadata
 
     def __str__(self):
+        """
+        Return a string representation of the ExtractedData.
+        """
         return f"Data for {self.request.id}"
 
 class AuditLog(models.Model):
     """
-    Model to log the processing of each verification request, including execution time, worker node, and any errors encountered.
+    Model to log the processing of each verification request.
+
+    Includes execution time, worker node, and any errors encountered.
     """
     
     request = models.ForeignKey(VerificationRequest, on_delete=models.CASCADE, related_name='logs')
@@ -78,4 +91,7 @@ class AuditLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        """
+        Return a string representation of the AuditLog.
+        """
         return f"Log {self.request.id} - {self.worker_node}"

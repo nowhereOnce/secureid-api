@@ -1,4 +1,6 @@
 """
+This module was created and tested with Python 3.11.
+
 ASGI config for myproject project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.

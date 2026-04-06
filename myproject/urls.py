@@ -1,4 +1,6 @@
 """
+This module was created and tested with Python 3.11.
+
 URL configuration for myproject project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
