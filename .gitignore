@@ -1,3 +1,4 @@
 .env
 media/
 identity/migrations/
+GEMINI.md
