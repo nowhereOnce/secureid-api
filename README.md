@@ -157,6 +157,18 @@ Para permitir que el contenedor acceda directamente al kernel de video y a los d
 * **Imagen Base:** El uso de GPU requiere la imagen `rocm/pytorch`, la cual incluye las librerías necesarias para la comunicación con los drivers de AMD en sistemas Linux (probado en CachyOS/Arch Linux). Esta versión de la imagen aumenta considerablemente su tamaño respecto a la versión original.
 
 -----
+
+## 🔒 Aviso de Privacidad (Demo & Open Source)
+
+**SecureID Engine** es un proyecto estrictamente **demostrativo y de código abierto**. Al ser un software auto-hospedado (*on-premise*), el responsable del tratamiento de los datos personales es la persona o entidad que ejecute la instancia del software.
+
+*   **Propósito:** Procesamiento técnico de identificaciones oficiales (OCR y Biometría) para validación de identidad.
+*   **Datos Procesados:** Nombre completo, CURP, Clave de Elector y biometría facial.
+*   **Responsabilidad:** El desarrollador original no tiene acceso, control ni capacidad de visualización sobre los datos, imágenes o resultados generados en instalaciones externas.
+
+Se recomienda utilizar este sistema en entornos de prueba controlados y eliminar los datos sensibles tras completar las validaciones técnicas.
+
+-----
 ## 🙏 Agradecimientos
 
 Un agradecimiento especial al **Ing. Angel Brito**, por sus invaluables observaciones y el feedback técnico proporcionado. Sus sugerencias fueron fundamentales para elevar la calidad de este proyecto y asegurar un estándar profesional desde su primer lanzamiento.
