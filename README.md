@@ -13,74 +13,77 @@
   <a href="https://github.com/nowhereOnce"><img src="https://img.shields.io/badge/Developer-nowhereOnce-lightgrey?style=flat-square&logo=github" alt="Developer"></a>
 </p>
 
+<p align="center">
+  <b>English</b> | <a href="README.es.md">Español</a>
+</p>
+
 ---
 
-### Sistema Distribuido de Verificación de Identidad y Análisis Biométrico
+### Distributed Identity Verification & Biometric Analysis System
 
-**SecureID Engine** es una solución robusta de grado industrial diseñada para la automatización del proceso de validación de identidad, con un enfoque específico en documentos de identificación mexicanos (INE). El sistema utiliza una arquitectura de microservicios orquestada con **Docker**, empleando procesamiento asíncrono para garantizar alta disponibilidad y escalabilidad.
+**SecureID Engine** is an industrial-grade solution designed to automate identity validation, specifically optimized for Mexican identification documents (**INE**). The system leverages a containerized microservices architecture using **Docker**, utilizing asynchronous processing to ensure high availability, scalability, and performance.
 
 <p align="center">
-  <img src="screenshots/upload_page.png" width="600" alt="Dashboard de SecureID">
+  <img src="screenshots/upload_page.png" width="600" alt="SecureID Dashboard">
 </p>
 
 -----
 
-## 🚀 Características Principales
+## 🚀 Core Features
 
-El sistema opera bajo dos modalidades de procesamiento configurables desde la interfaz:
+The system offers two processing modalities configurable via the interface:
 
-1.  **Modo Extracción (Simple OCR):** \* Extracción automatizada de metadatos críticos: **Nombre completo, CURP, Clave de Elector y Fecha de Nacimiento**.
+1.  **Extraction Mode (Lightweight OCR):**
+    *   Automated extraction of critical metadata: **Full Name, CURP (Tax ID), Elector Key, and Date of Birth**.
+    *   Ideal for fast onboarding flows where visual data consistency is the priority.
 
-      * Ideal para flujos de registro rápido donde la consistencia visual es suficiente.
-
-2.  **Modo Verificación (Full Evaluation):**
-
-      * **Biometría Facial:** Comparación de 128 puntos de referencia faciales entre la identificación y una selfie de referencia mediante la librería `face_recognition`.
-      * **Lógica de Consistencia (Triple Check):** Algoritmo propio que valida la integridad de los datos cruzando la fecha de nacimiento impresa con los algoritmos de generación de CURP y Clave de Elector.
-      * **Global Trust Score:** Cálculo de un índice de confianza global basado en pesos configurables ($S = w_1 \cdot C_f + w_2 \cdot C_l + w_3 \cdot C_d$).
+2.  **Verification Mode (Comprehensive Evaluation):**
+    *   **Facial Biometrics:** Comparison of 128 facial landmarks between the ID photo and a live selfie using the `face_recognition` library (dlib-based).
+    *   **Logical Consistency Engine (Triple-Check):** A proprietary algorithm that validates data integrity by cross-referencing the printed Date of Birth with the generation patterns of the CURP and Elector Key.
+    *   **Global Trust Score:** Calculation of a global confidence index based on weighted parameters ($S = w_1 \cdot C_f + w_2 \cdot C_l + w_3 \cdot C_d$).
 
 <p align="center">
-  <img src="screenshots/verification_page.png" width="600" alt="Dashboard de SecureID">
+  <img src="screenshots/verification_page.png" width="600" alt="SecureID Results">
 </p>
 
 -----
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Technology Stack
 
-  * **Backend:** Django (Python 3.11).
-  * **Procesamiento Asíncrono:** Celery + Redis (Broker de mensajes).
-  * **Base de Datos:** PostgreSQL (Persistencia de auditoría y resultados).
-  * **Visión Artificial e IA:**
-      * **EasyOCR:** Extracción de texto con soporte para GPU.
-      * **OpenCV:** Preprocesamiento de imágenes (Umbralización de Otsu) para mejorar la precisión del OCR.
-      * **Face Recognition (dlib):** Modelos de red neuronal para codificación facial.
+*   **Backend:** Django (Python 3.11).
+*   **Asynchronous Processing:** Celery + Redis (Message Broker).
+*   **Database:** PostgreSQL (Persistence for audit logs and results).
+*   **Computer Vision & AI:**
+    *   **EasyOCR:** Text extraction with GPU acceleration support.
+    *   **OpenCV:** Image preprocessing (Otsu's Binarization) to enhance OCR precision.
+    *   **Face Recognition (dlib):** Deep learning models for facial encoding.
 
 -----
 
-## 💻 Requerimientos del Sistema
+## 💻 System Requirements
 
-Para garantizar un rendimiento óptimo de los modelos de visión artificial y el procesamiento asíncrono, se sugieren las siguientes especificaciones:
+To ensure optimal performance for Computer Vision models and asynchronous tasks, the following specifications are recommended:
 
-| Componente | Versión CPU (Estándar) | Versión GPU (AMD ROCm) |
+| Component | CPU Version (Standard) | GPU Version (AMD ROCm) |
 | :--- | :--- | :--- |
-| **Procesador** | 4+ Núcleos (Recomendado) | 2+ Núcleos |
-| **RAM** | 4GB (Mínimo) / 8GB (Rec.) | 8GB (Mínimo) |
-| **GPU** | N/A | AMD RDNA2+ (Ej. RX 6600 o superior) |
-| **VRAM** | N/A | 4GB (Mínimo) |
-| **Almacenamiento** | ~5GB Libres | 25GB+ Libres (Imagen ROCm pesada) |
-| **Sistema Operativo** | Linux / macOS / Windows | Linux (Con soporte KFD/amdgpu) |
+| **Processor** | 4+ Cores (Recommended) | 2+ Cores |
+| **RAM** | 4GB (Min) / 8GB (Rec.) | 8GB (Min) |
+| **GPU** | N/A | AMD RDNA2+ (e.g., RX 6600+) |
+| **VRAM** | N/A | 4GB (Min) |
+| **Storage** | ~5GB Free | 25GB+ Free (ROCm images are large) |
+| **OS** | Linux / macOS / Windows | Linux (with KFD/amdgpu support) |
 
-> **Nota:** La versión GPU requiere drivers específicos de AMD y una configuración de kernel compatible con ROCm para la comunicación con el hardware.
+> **Note:** The GPU version requires specific AMD drivers and a ROCm-compatible kernel configuration.
 
 -----
 
-## 📦 Instalación y Despliegue
+## 📦 Installation & Deployment
 
-El proyecto está completamente contenedorizado para garantizar la portabilidad entre entornos de desarrollo (CPU) y producción (GPU).
+The project is fully containerized to ensure portability between development (CPU) and production (GPU) environments.
 
-### 1\. Configuración de Variables de Entorno
+### 1. Environment Variables Configuration
 
-Crea un archivo `.env` en la raíz del proyecto basándote en la siguiente estructura:
+Create a `.env` file in the root directory based on the following structure:
 
 ```env
 # Database
@@ -98,55 +101,55 @@ CELERY_BROKER_URL=redis://redis:6379/0
 WORKER_NAME=Node-Alpha
 ```
 
-### 2\. Despliegue con Docker
+### 2. Deployment with Docker
 
-Para ejecutar el sistema utilizando únicamente la **CPU** (Versión Ligera de \~500MB para el contenedor Web):
+To run the system using **CPU only** (Lightweight version ~500MB for the Web container):
 
 ```bash
-# Construir e iniciar contenedores
+# Build and start containers
 docker compose up -d --build
 
-# Realizar migraciones de base de datos
+# Run database migrations
 docker compose exec web python manage.py migrate
 
-# Crear el usuario administrador (Root)
+# Create superuser (Admin)
 docker compose exec web python manage.py createsuperuser
 ```
 
 -----
 
-## 🖥️ Uso del Sistema
+## 🖥️ System Usage
 
-1.  **Portal Web (`/upload/`):** Sube la imagen de la INE y, si activas el "Modo Verificador", una selfie. El sistema enviará la tarea al Worker de forma asíncrona.
-2.  **Dashboard de Detalle (`/verification/<uuid>/`):** Visualiza los resultados, el score de confianza y el estatus de la tarea en tiempo real.
-3.  **Portal de Administración (`/admin/`):** Gestiona todas las solicitudes, revisa los logs de auditoría y los tiempos de ejecución de cada nodo de procesamiento.
+1.  **Web Portal (`/upload/`):** Upload the INE image and, if "Verification Mode" is active, a selfie. The system will dispatch the task to the Worker asynchronously.
+2.  **Detail Dashboard (`/verification/<uuid>/`):** View results, confidence scores, and real-time task status.
+3.  **Admin Portal (`/admin/`):** Manage all requests, review audit logs, and monitor execution times for each processing node.
 
 <p align="center">
-  <img src="screenshots/admin_page.png" width="600" alt="Dashboard de SecureID">
+  <img src="screenshots/admin_page.png" width="600" alt="Admin Dashboard">
 </p>
 
 ---
 
-## ⚡ Aceleración por GPU (AMD ROCm)
+## ⚡ Hardware Acceleration (AMD ROCm / GPU)
 
-Para entornos que cuentan con hardware compatible (especialmente GPUs AMD con arquitectura RDNA2 o superior), el sistema permite desplazar la carga computacional del OCR a la GPU para reducir los tiempos de inferencia significativamente.
+For environments with compatible hardware (specifically AMD GPUs with RDNA2 architecture or higher), the system can offload OCR computation to the GPU to significantly reduce inference times.
 
-### 1. Configuración del Entorno (.env)
-Asegúrate de definir las siguientes variables para habilitar el motor de hardware:
+### 1. Environment Setup (.env)
+Define the following variables to enable the hardware engine:
 
 ```env
-# Define el Dockerfile de alto rendimiento
+# Use the high-performance Dockerfile
 WORKER_DOCKERFILE=Dockerfile.gpu
 
-# Habilita el flag interno para el uso de GPU en EasyOCR y modelos
+# Enable internal flag for GPU usage in EasyOCR and models
 WORKER_GPU_ENABLED=true
 
-# Compatibilidad específica para RX 6600/6650 XT (Navi 23)
+# Specific compatibility for RX 6600/6650 XT (Navi 23)
 HSA_OVERRIDE_GFX_VERSION=10.3.0
 ```
 
-### 2. Modificaciones en `docker-compose.yml`
-Para permitir que el contenedor acceda directamente al kernel de video y a los descriptores de renderizado de Linux, actualiza la sección del `worker`:
+### 2. `docker-compose.yml` Modifications
+To grant the container direct access to the video kernel and Linux render descriptors, update the `worker` section:
 
 ```yaml
   worker:
@@ -154,12 +157,12 @@ Para permitir que el contenedor acceda directamente al kernel de video y a los d
       context: .
       dockerfile: ${WORKER_DOCKERFILE:-Dockerfile}
     # ...
-    # Acceso directo al hardware de aceleración
+    # Direct access to acceleration hardware
     devices:
-      - "/dev/kfd:/dev/kfd" # Interfaz de cómputo para ROCm
-      - "/dev/dri:/dev/dri" # Renderizado directo
+      - "/dev/kfd:/dev/kfd" # ROCm compute interface
+      - "/dev/dri:/dev/dri" # Direct rendering
     
-    # Grupos de sistema necesarios para el acceso a GPU
+    # Required system groups for GPU access
     group_add:
       - video
       - render
@@ -167,31 +170,34 @@ Para permitir que el contenedor acceda directamente al kernel de video y a los d
     environment:
       - WORKER_GPU_ENABLED=${WORKER_GPU_ENABLED}
       - HSA_OVERRIDE_GFX_VERSION=${HSA_OVERRIDE_GFX_VERSION}
-      # ... resto de variables
 ```
 
-### 3. Consideraciones Técnicas
-* **Imagen Base:** El uso de GPU requiere la imagen `rocm/pytorch`, la cual incluye las librerías necesarias para la comunicación con los drivers de AMD en sistemas Linux (probado en CachyOS/Arch Linux). Esta versión de la imagen aumenta considerablemente su tamaño respecto a la versión original.
+### 3. Technical Considerations
+*   **Base Image:** GPU usage requires the `rocm/pytorch` image, which includes the necessary libraries for AMD driver communication on Linux (tested on CachyOS/Arch Linux). This version is significantly larger than the CPU-only version.
 
 -----
 
-## 🔒 Aviso de Privacidad (Demo & Open Source)
+## 🔒 Privacy & Data Handling (Demo & Open Source)
 
-**SecureID Engine** es un proyecto estrictamente **demostrativo y de código abierto**. Al ser un software auto-hospedado (*on-premise*), el responsable del tratamiento de los datos personales es la persona o entidad que ejecute la instancia del software.
+**SecureID Engine** is strictly a **demonstrative and open-source project**. As an on-premise, self-hosted solution, the entity or individual running the software instance is the sole data controller.
 
-*   **Propósito:** Procesamiento técnico de identificaciones oficiales (OCR y Biometría) para validación de identidad.
-*   **Datos Procesados:** Nombre completo, CURP, Clave de Elector y biometría facial.
-*   **Responsabilidad:** El desarrollador original no tiene acceso, control ni capacidad de visualización sobre los datos, imágenes o resultados generados en instalaciones externas.
+*   **Purpose:** Technical processing of official IDs (OCR & Biometrics) for identity validation.
+*   **Processed Data:** Full name, CURP, Elector Key, and facial biometrics.
+*   **Liability:** The original developer has no access, control, or visibility over any data, images, or results generated in external installations.
 
-Se recomienda utilizar este sistema en entornos de prueba controlados y eliminar los datos sensibles tras completar las validaciones técnicas.
-
------
-## 🙏 Agradecimientos
-
-Un agradecimiento especial al **Ing. Angel Brito**, por sus invaluables observaciones y el feedback técnico proporcionado. Sus sugerencias fueron fundamentales para elevar la calidad de este proyecto y asegurar un estándar profesional desde su primer lanzamiento.
+It is highly recommended to use this system in controlled test environments and delete sensitive data after completing technical validations.
 
 -----
 
-## 👨‍💻 Autor
+## 🙏 Special thanks
 
-**Enrique Alejandro Aguilar Ramos** *Ingeniero en Computación por la UNAM* *Enfocado en Backend escalable e integración de IA.* [GitHub: nowhereOnce](https://www.google.com/search?q=https://github.com/nowhereOnce)
+To **Ing. Angel Brito** for his invaluable feedback and technical insights. His suggestions were instrumental in elevating the quality of this project and ensuring professional standards from its initial release.
+
+-----
+
+## 👨‍💻 Author
+
+**Enrique Alejandro Aguilar Ramos**
+*Computer Engineer (UNAM)*
+*Focus: Scalable Backend & AI Integration.*
+[GitHub: nowhereOnce](https://github.com/nowhereOnce)
