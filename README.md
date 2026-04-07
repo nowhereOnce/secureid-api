@@ -57,6 +57,23 @@ El sistema opera bajo dos modalidades de procesamiento configurables desde la in
 
 -----
 
+## 💻 Requerimientos del Sistema
+
+Para garantizar un rendimiento óptimo de los modelos de visión artificial y el procesamiento asíncrono, se sugieren las siguientes especificaciones:
+
+| Componente | Versión CPU (Estándar) | Versión GPU (AMD ROCm) |
+| :--- | :--- | :--- |
+| **Procesador** | 4+ Núcleos (Recomendado) | 2+ Núcleos |
+| **RAM** | 4GB (Mínimo) / 8GB (Rec.) | 8GB (Mínimo) |
+| **GPU** | N/A | AMD RDNA2+ (Ej. RX 6600 o superior) |
+| **VRAM** | N/A | 4GB (Mínimo) |
+| **Almacenamiento** | ~5GB Libres | 25GB+ Libres (Imagen ROCm pesada) |
+| **Sistema Operativo** | Linux / macOS / Windows | Linux (Con soporte KFD/amdgpu) |
+
+> **Nota:** La versión GPU requiere drivers específicos de AMD y una configuración de kernel compatible con ROCm para la comunicación con el hardware.
+
+-----
+
 ## 📦 Instalación y Despliegue
 
 El proyecto está completamente contenedorizado para garantizar la portabilidad entre entornos de desarrollo (CPU) y producción (GPU).
